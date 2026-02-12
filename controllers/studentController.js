@@ -1,7 +1,9 @@
 import Student from "../models/Student.js";
 import Admin from "../models/Admin.js";
 import transporter from "../config/mailer.js";
+import { sendStudentRegistrationEmail } from "../utils/emailService.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";   // add this at top
 
 const generatePassword = () => {
   const random = Math.floor(1000 + Math.random() * 9000);
@@ -40,12 +42,15 @@ export const registerStudent = async (req, res) => {
     });
 
     // Send email
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Student Registration",
-      html: `<h3>Welcome ${username}</h3><p>Password: ${passwordPlain}</p><p>You can login after: ${loginDate}</p>`
-    });
+   // Send email
+await sendStudentRegistrationEmail({
+  to: email.toLowerCase(),
+  username,
+  password: passwordPlain,
+  loginDate: loginDate.toDateString() // e.g., "Thu Feb 12 2026"
+});
+
+
 
     res.json({ message: "Registered successfully. Check email." });
 
@@ -54,6 +59,8 @@ export const registerStudent = async (req, res) => {
     res.status(500).json({ message: "Registration failed" });
   }
 };
+
+
 
 export const loginStudent = async (req, res) => {
   try {
@@ -74,9 +81,21 @@ export const loginStudent = async (req, res) => {
       });
     }
 
+    // CREATE TOKEN
+    const token = jwt.sign(
+      { id: student._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
     res.json({
       message: "Login successful",
-      student: { id: student._id, username: student.username, email: student.email }
+      token,
+      student: {
+        id: student._id,
+        username: student.username,
+        email: student.email
+      }
     });
 
   } catch (err) {
@@ -84,6 +103,7 @@ export const loginStudent = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 export const getStudents = async (req, res) => {
   try {
@@ -128,3 +148,18 @@ export const deleteStudent = async (req, res) => {
     res.status(500).json({ message: "Failed to delete student" });
   }
 };
+
+export const getProfile = async (req, res) => {
+  try {
+    const student = await Student.findById(req.student.id).select("-password");
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.status(200).json(student);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+

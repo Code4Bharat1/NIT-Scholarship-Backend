@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import studentRoutes from "./routes/studentRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
-import studentRoutes from "./Routes/studentRoutes.js";
-import adminRoutes from "./Routes/adminRoutes.js";
 
 dotenv.config();
 connectDB();
