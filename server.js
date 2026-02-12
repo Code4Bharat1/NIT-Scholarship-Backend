@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-
+import resultRoutes from "./routes/resultRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -16,5 +16,6 @@ app.use(express.json());
 
 app.use("/api/students", studentRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/results", resultRoutes);
 
 app.listen(5000, () => console.log("Server running on port 5000"));

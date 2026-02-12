@@ -5,12 +5,18 @@ dotenv.config();
 
 // Gmail transporter
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,          // IMPORTANT (not 465)
+  secure: false,      // must be false for 587
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS // App password if 2FA is on
-  }
+    pass: process.env.EMAIL_PASS
+  },
+    tls: {
+    rejectUnauthorized: false,
+  },
 });
+
 
 /**
  * Send professional document email (e.g., registration credentials)

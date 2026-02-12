@@ -2,7 +2,7 @@ import Admin from "../models/Admin.js";
 import Student from "../models/Student.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import transporter from "../config/mailer.js";
+
 
 export const registerAdmin = async (req, res) => {
   try {

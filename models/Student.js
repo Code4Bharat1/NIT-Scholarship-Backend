@@ -11,8 +11,24 @@ const studentSchema = new mongoose.Schema(
     qualifications: { type: String },
     courseInterest: { type: String },
     loginDate: { type: Date, required: true },
+
+    marks: {
+      type: Number,
+      default: 0,
+    },
+
+    timeTaken: {
+      type: Number, // seconds ya minutes (jo tum use kar rahe ho)
+      default: 0,
+    },
+
+    attendedQuestions: {
+      type: Number,
+      default: 0,
+    },
   },
-  { timestamps: true }
+
+  { timestamps: true },
 );
 
 const Student = mongoose.model("Student", studentSchema);

@@ -1,6 +1,6 @@
 import Student from "../models/Student.js";
 import Admin from "../models/Admin.js";
-import transporter from "../config/mailer.js";
+
 import { sendStudentRegistrationEmail } from "../utils/emailService.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";   // add this at top
@@ -10,56 +10,138 @@ const generatePassword = () => {
   return `NIT@${random}`;
 };
 
+// export const registerStudent = async (req, res) => {
+//   try {
+//     const { username, email, mobile, parentMobile, address, qualifications, courseInterest } = req.body;
+
+//     // Admin & Student checks
+//     const adminExists = await Admin.findOne({ $or: [{ email }, { username }] });
+//     if (adminExists) return res.status(400).json({ message: "Student cannot match admin credentials" });
+
+//     const studentExists = await Student.findOne({ $or: [{ email }, { username }] });
+//     if (studentExists) return res.status(400).json({ message: "Username or email already registered as student" });
+
+//     // Generate password
+//     const passwordPlain = generatePassword();
+//     const hashedPassword = await bcrypt.hash(passwordPlain, 10);
+
+//     const loginDate = new Date();
+//     loginDate.setDate(loginDate.getDate() + 1);
+
+//     // Save student
+//     await Student.create({
+//       username,
+//       email: email.toLowerCase(),
+//       password: hashedPassword,
+//       mobile,
+//       parentMobile,
+//       address,
+//       qualifications,
+//       courseInterest,
+//       loginDate
+//     });
+
+//     // Send email
+//    // Send email
+// await sendStudentRegistrationEmail({
+//   to: email.toLowerCase(),
+//   username,
+//   password: passwordPlain,
+//   loginDate: loginDate.toDateString() // e.g., "Thu Feb 12 2026"
+// });
+
+
+
+//     res.json({ message: "Registered successfully. Check email." });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Registration failed" });
+//   }
+// };
+
+
+
 export const registerStudent = async (req, res) => {
   try {
-    const { username, email, mobile, parentMobile, address, qualifications, courseInterest } = req.body;
+    const {
+      username,
+      email,
+      mobile,
+      parentMobile,
+      address,
+      qualifications,
+      courseInterest,
+    } = req.body;
 
-    // Admin & Student checks
-    const adminExists = await Admin.findOne({ $or: [{ email }, { username }] });
-    if (adminExists) return res.status(400).json({ message: "Student cannot match admin credentials" });
+    const emailLower = email.toLowerCase();
 
-    const studentExists = await Student.findOne({ $or: [{ email }, { username }] });
-    if (studentExists) return res.status(400).json({ message: "Username or email already registered as student" });
+    // ✅ Check Admin conflict
+    const adminExists = await Admin.findOne({
+      $or: [{ email: emailLower }, { username }],
+    });
 
-    // Generate password
+    if (adminExists) {
+      return res.status(400).json({
+        message: "Student cannot match admin credentials",
+      });
+    }
+
+    // ✅ Check Student duplicate
+    const studentExists = await Student.findOne({
+      $or: [{ email: emailLower }, { username }],
+    });
+
+    if (studentExists) {
+      return res.status(400).json({
+        message: "Username or email already registered",
+      });
+    }
+
+    // ✅ Generate password
     const passwordPlain = generatePassword();
     const hashedPassword = await bcrypt.hash(passwordPlain, 10);
 
+    // ✅ Set login date (tomorrow)
     const loginDate = new Date();
     loginDate.setDate(loginDate.getDate() + 1);
 
-    // Save student
-    await Student.create({
+    // ✅ Save student FIRST
+    const student = await Student.create({
       username,
-      email: email.toLowerCase(),
+      email: emailLower,
       password: hashedPassword,
       mobile,
       parentMobile,
       address,
       qualifications,
       courseInterest,
-      loginDate
+      loginDate,
     });
 
-    // Send email
-   // Send email
-await sendStudentRegistrationEmail({
-  to: email.toLowerCase(),
-  username,
-  password: passwordPlain,
-  loginDate: loginDate.toDateString() // e.g., "Thu Feb 12 2026"
-});
+    // ✅ Send email WITHOUT blocking registration
+    sendStudentRegistrationEmail({
+      to: emailLower,
+      username,
+      password: passwordPlain,
+      loginDate: loginDate.toDateString(),
+    }).catch((err) => {
+      console.error("Email failed but student registered:", err.message);
+    });
 
-
-
-    res.json({ message: "Registered successfully. Check email." });
+    // ✅ Success response
+    res.status(201).json({
+      message: "Student registered successfully",
+      studentId: student._id,
+    });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Registration failed" });
+    console.error("REGISTER ERROR:", err);
+    res.status(500).json({
+      message: "Registration failed",
+    });
   }
 };
-
 
 
 export const loginStudent = async (req, res) => {
