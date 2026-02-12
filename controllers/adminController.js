@@ -1,9 +1,10 @@
-const Admin = require("../models/Admin");
-const Student = require("../models/Student");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import Admin from "../models/Admin.js";
+import Student from "../models/Student.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import transporter from "../config/mailer.js";
 
-exports.registerAdmin = async (req, res) => {
+export const registerAdmin = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
@@ -39,42 +40,44 @@ exports.registerAdmin = async (req, res) => {
   }
 };
 
+export const loginAdmin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
+    const admin = await Admin.findOne({ email });
+    if (!admin) return res.status(400).json({ message: "Admin not found" });
 
+    const valid = await bcrypt.compare(password, admin.password);
+    if (!valid) return res.status(400).json({ message: "Wrong password" });
 
-exports.loginAdmin = async (req, res) => {
-  const { email, password } = req.body;
+    // Create JWT token
+    const token = jwt.sign(
+      { id: admin._id, email: admin.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
-  const admin = await Admin.findOne({ email });
-  if (!admin) return res.status(400).json({ message: "Admin not found" });
+    res.json({ message: "Admin login success", token });
 
-  const valid = await bcrypt.compare(password, admin.password);
-  if (!valid) return res.status(400).json({ message: "Wrong password" });
-
-  // Create JWT token
-  const token = jwt.sign(
-    { id: admin._id, email: admin.email },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" } // token valid for 1 day
-  );
-
-  res.json({ message: "Admin login success", token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Admin login failed" });
+  }
 };
 
-const transporter = require("../config/mailer");
-
-exports.sendEmail = async (req, res) => {
+export const sendEmail = async (req, res) => {
   try {
     const { recipients, subject, content } = req.body;
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: recipients, // works for bulk too
+      to: recipients,
       subject: subject,
       text: content,
     });
 
     res.json({ success: true, message: "Email sent successfully" });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to send email" });

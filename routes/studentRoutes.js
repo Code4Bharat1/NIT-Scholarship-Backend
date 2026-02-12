@@ -1,10 +1,11 @@
-// Routes/studentRoutes.js
-const express = require("express");
+import express from "express";
+import * as studentController from "../controllers/studentController.js";
+
 const router = express.Router();
-const studentController = require("../controllers/studentController");
 
 router.post("/register", studentController.registerStudent);
 router.post("/login", studentController.loginStudent);
 router.get("/", studentController.getStudents);
-router.delete("/:id", studentController.deleteStudent); // ← add this
-module.exports = router;
+router.delete("/:id", studentController.deleteStudent);
+
+export default router;

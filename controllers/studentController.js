@@ -1,18 +1,18 @@
-const Student = require("../models/Student");
-const Admin = require("../models/Admin");
-const transporter = require("../config/mailer");
-const bcrypt = require("bcryptjs");
+import Student from "../models/Student.js";
+import Admin from "../models/Admin.js";
+import transporter from "../config/mailer.js";
+import bcrypt from "bcryptjs";
 
 const generatePassword = () => {
   const random = Math.floor(1000 + Math.random() * 9000);
   return `NIT@${random}`;
 };
 
-exports.registerStudent = async (req, res) => {
+export const registerStudent = async (req, res) => {
   try {
     const { username, email, mobile, parentMobile, address, qualifications, courseInterest } = req.body;
 
-    // Admin & Student checks (same as before)
+    // Admin & Student checks
     const adminExists = await Admin.findOne({ $or: [{ email }, { username }] });
     if (adminExists) return res.status(400).json({ message: "Student cannot match admin credentials" });
 
@@ -39,7 +39,7 @@ exports.registerStudent = async (req, res) => {
       loginDate
     });
 
-    // Send email (same as before)
+    // Send email
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -55,8 +55,7 @@ exports.registerStudent = async (req, res) => {
   }
 };
 
-
-exports.loginStudent = async (req, res) => {
+export const loginStudent = async (req, res) => {
   try {
     const { email, password } = req.body;
     const emailNormalized = email.trim().toLowerCase();
@@ -86,7 +85,7 @@ exports.loginStudent = async (req, res) => {
   }
 };
 
-exports.getStudents = async (req, res) => {
+export const getStudents = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
@@ -118,8 +117,7 @@ exports.getStudents = async (req, res) => {
   }
 };
 
-
-exports.deleteStudent = async (req, res) => {
+export const deleteStudent = async (req, res) => {
   try {
     const { id } = req.params;
     const deleted = await Student.findByIdAndDelete(id);

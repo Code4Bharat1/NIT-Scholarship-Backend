@@ -1,7 +1,10 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+
+import studentRoutes from "./Routes/studentRoutes.js";
+import adminRoutes from "./Routes/adminRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -11,8 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Make sure paths are correct
-app.use("/api/students", require("./Routes/studentRoutes"));
-app.use("/api/admin", require("./Routes/adminRoutes"));
+app.use("/api/students", studentRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.listen(5000, () => console.log("Server running on port 5000"));
