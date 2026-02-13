@@ -78,7 +78,7 @@ export const registerStudent = async (req, res) => {
 
     // ✅ Check Admin conflict
     const adminExists = await Admin.findOne({
-      $or: [{ email: emailLower }, { username }],
+      $or: [{ email: emailLower }],
     });
 
     if (adminExists) {
@@ -89,7 +89,7 @@ export const registerStudent = async (req, res) => {
 
     // ✅ Check Student duplicate
     const studentExists = await Student.findOne({
-      $or: [{ email: emailLower }, { username }],
+      $or: [{ email: emailLower }],
     });
 
     if (studentExists) {
