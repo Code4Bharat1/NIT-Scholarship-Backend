@@ -1,67 +1,18 @@
 import Student from "../models/Student.js";
 import Admin from "../models/Admin.js";
+import Otp from "../models/Otp.js";
 
 import { sendStudentRegistrationEmail } from "../utils/emailService.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";   // add this at top
+import jwt from "jsonwebtoken";
 
 const generatePassword = () => {
   const random = Math.floor(1000 + Math.random() * 9000);
   return `NIT@${random}`;
 };
 
-// export const registerStudent = async (req, res) => {
-//   try {
-//     const { username, email, mobile, parentMobile, address, qualifications, courseInterest } = req.body;
 
-//     // Admin & Student checks
-//     const adminExists = await Admin.findOne({ $or: [{ email }, { username }] });
-//     if (adminExists) return res.status(400).json({ message: "Student cannot match admin credentials" });
-
-//     const studentExists = await Student.findOne({ $or: [{ email }, { username }] });
-//     if (studentExists) return res.status(400).json({ message: "Username or email already registered as student" });
-
-//     // Generate password
-//     const passwordPlain = generatePassword();
-//     const hashedPassword = await bcrypt.hash(passwordPlain, 10);
-
-//     const loginDate = new Date();
-//     loginDate.setDate(loginDate.getDate() + 1);
-
-//     // Save student
-//     await Student.create({
-//       username,
-//       email: email.toLowerCase(),
-//       password: hashedPassword,
-//       mobile,
-//       parentMobile,
-//       address,
-//       qualifications,
-//       courseInterest,
-//       loginDate
-//     });
-
-//     // Send email
-//    // Send email
-// await sendStudentRegistrationEmail({
-//   to: email.toLowerCase(),
-//   username,
-//   password: passwordPlain,
-//   loginDate: loginDate.toDateString() // e.g., "Thu Feb 12 2026"
-// });
-
-
-
-//     res.json({ message: "Registered successfully. Check email." });
-
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Registration failed" });
-//   }
-// };
-
-
-
+// ================= REGISTER STUDENT =================
 export const registerStudent = async (req, res) => {
   try {
     const {
@@ -76,37 +27,40 @@ export const registerStudent = async (req, res) => {
 
     const emailLower = email.toLowerCase();
 
-    // ✅ Check Admin conflict
-    const adminExists = await Admin.findOne({
-      $or: [{ email: emailLower }],
-    });
+    // ✅ CORRECT OTP CHECK
+    const otpRecord = await Otp.findOne({ email: emailLower });
 
+    if (!otpRecord) {
+      return res.status(400).json({
+        message: "Please verify your email first using OTP",
+      });
+    }
+
+    // ✅ Check Admin conflict (UNCHANGED)
+    const adminExists = await Admin.findOne({ email: emailLower });
     if (adminExists) {
       return res.status(400).json({
         message: "Student cannot match admin credentials",
       });
     }
 
-    // ✅ Check Student duplicate
-    const studentExists = await Student.findOne({
-      $or: [{ email: emailLower }],
-    });
-
+    // ✅ Check Student duplicate (UNCHANGED)
+    const studentExists = await Student.findOne({ email: emailLower });
     if (studentExists) {
       return res.status(400).json({
         message: "Username or email already registered",
       });
     }
 
-    // ✅ Generate password
+    // ✅ Generate password (UNCHANGED)
     const passwordPlain = generatePassword();
     const hashedPassword = await bcrypt.hash(passwordPlain, 10);
 
-    // ✅ Set login date (tomorrow)
+    // ✅ Set login date (UNCHANGED)
     const loginDate = new Date();
     loginDate.setDate(loginDate.getDate() + 1);
 
-    // ✅ Save student FIRST
+    // ✅ Save student (UNCHANGED)
     const student = await Student.create({
       username,
       email: emailLower,
@@ -119,7 +73,10 @@ export const registerStudent = async (req, res) => {
       loginDate,
     });
 
-    // ✅ Send email WITHOUT blocking registration
+    // ✅ DELETE OTP AFTER REGISTRATION
+    await Otp.deleteOne({ email: emailLower });
+
+    // ✅ Send email (UNCHANGED)
     sendStudentRegistrationEmail({
       to: emailLower,
       username,
@@ -129,7 +86,6 @@ export const registerStudent = async (req, res) => {
       console.error("Email failed but student registered:", err.message);
     });
 
-    // ✅ Success response
     res.status(201).json({
       message: "Student registered successfully",
       studentId: student._id,
@@ -144,15 +100,18 @@ export const registerStudent = async (req, res) => {
 };
 
 
+// ================= LOGIN STUDENT =================
 export const loginStudent = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const emailNormalized = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
 
     const student = await Student.findOne({ email: emailNormalized });
     if (!student) return res.status(400).json({ message: "User not found" });
 
-    const valid = await bcrypt.compare(password, student.password);
+    const valid = await bcrypt.compare(cleanPassword, student.password);
     if (!valid) return res.status(400).json({ message: "Invalid password" });
 
     const today = new Date();
@@ -163,7 +122,6 @@ export const loginStudent = async (req, res) => {
       });
     }
 
-    // CREATE TOKEN
     const token = jwt.sign(
       { id: student._id },
       process.env.JWT_SECRET,
@@ -187,6 +145,7 @@ export const loginStudent = async (req, res) => {
 };
 
 
+// ================= GET STUDENTS =================
 export const getStudents = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -219,6 +178,8 @@ export const getStudents = async (req, res) => {
   }
 };
 
+
+// ================= DELETE STUDENT =================
 export const deleteStudent = async (req, res) => {
   try {
     const { id } = req.params;
@@ -226,11 +187,12 @@ export const deleteStudent = async (req, res) => {
     if (!deleted) return res.status(404).json({ message: "Student not found" });
     res.json({ message: "Student deleted successfully" });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Failed to delete student" });
   }
 };
 
+
+// ================= GET PROFILE =================
 export const getProfile = async (req, res) => {
   try {
     const student = await Student.findById(req.student.id).select("-password");
@@ -244,4 +206,3 @@ export const getProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
