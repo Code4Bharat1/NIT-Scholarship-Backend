@@ -9,16 +9,15 @@ import { protect, approvedUserOnly, adminOnly } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// All routes require authentication
+// All routes require login
 router.use(protect);
-router.use(approvedUserOnly);
 
-// User routes
-router.get('/status', getFeedbackStatus);       // Check if feedback submitted
-router.post('/submit', submitFeedback);          // Submit feedback
-router.get('/my', getMyFeedback);                // Get own feedback
+// USER ROUTES
+router.get('/status', approvedUserOnly, getFeedbackStatus);
+router.post('/submit', approvedUserOnly, submitFeedback);
+router.get('/my', approvedUserOnly, getMyFeedback);
 
-// Admin routes
-router.get('/admin/all', adminOnly, getAllFeedbacks); // Get all feedbacks with stats
+// ADMIN ROUTE
+router.get('/admin/all', adminOnly, getAllFeedbacks);
 
 export default router;
