@@ -1,97 +1,196 @@
-import Student from "../models/Student.js";
+import mongoose from 'mongoose';
+import Question from '../models/question.model.js';
+import User from '../models/user.model.js';
+import Result from '../models/result.model.js';
 
-// ===============================
-// SUBMIT EXAM
-// ===============================
+// @desc    Get exam questions (for student)
+// @route   GET /api/exam/questions
+// @access  Private/User (Approved & Can Take Exam)
+export const getExamQuestions = async (req, res) => {
+  try {
+    if (req.user.examAttempted) {
+      return res.status(403).json({ success: false, message: 'You have already attempted the exam' });
+    }
+
+    if (!req.user.canTakeExam) {
+      return res.status(403).json({ success: false, message: 'Exam access not enabled. Please contact admin.' });
+    }
+
+    const questions = await Question.find({ isActive: true })
+      .select('-correctAnswer')
+      .sort({ questionNumber: 1 })
+      .limit(120);
+
+    if (questions.length < 120) {
+      return res.status(500).json({ success: false, message: 'Not enough questions available. Please contact admin.' });
+    }
+
+    await User.findByIdAndUpdate(req.user.id, { examStartTime: new Date() });
+
+    res.status(200).json({
+      success: true,
+      count: questions.length,
+      examDuration: 120,
+      data: { questions }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching exam questions', error: error.message });
+  }
+};
+
+// @desc    Submit exam
+// @route   POST /api/exam/submit
+// @access  Private/User (Approved & Can Take Exam)
 export const submitExam = async (req, res) => {
   try {
-    const { studentId, marks, attendedQuestions, timeTaken } = req.body;
+    const { answers } = req.body;
 
-    if (!studentId) {
+    if (!answers || !Array.isArray(answers) || answers.length === 0) {
+      return res.status(400).json({ success: false, message: 'Please provide answers array' });
+    }
+
+    const invalidIds = answers.filter(a => !a.questionId || !mongoose.Types.ObjectId.isValid(a.questionId));
+    if (invalidIds.length > 0) {
       return res.status(400).json({
         success: false,
-        message: "Student ID is required",
+        message: 'Invalid questionId(s). Use real _id values from GET /api/exam/questions',
+        invalidIds: invalidIds.map(a => a.questionId)
       });
     }
 
-    // Mongoose automatically converts string to ObjectId
-    const student = await Student.findById(studentId);
-
-    if (!student) {
-      return res.status(404).json({
-        success: false,
-        message: "Student not found",
-      });
+    if (req.user.examAttempted) {
+      return res.status(403).json({ success: false, message: 'You have already attempted the exam' });
     }
 
-    student.marks = Number(marks) || 0;
-    student.attendedQuestions = Number(attendedQuestions) || 0;
-    student.timeTaken = Math.floor(Number(timeTaken) || 0);
+    const user = await User.findById(req.user.id);
 
-    await student.save();
+    if (!user.examStartTime) {
+      return res.status(400).json({ success: false, message: 'Exam not started' });
+    }
 
-    return res.status(200).json({
+    const examSubmittedAt = new Date();
+    const examStartedAt = user.examStartTime;
+    const timeTaken = Math.floor((examSubmittedAt - examStartedAt) / 1000);
+
+    if (timeTaken > 7200) {
+      return res.status(403).json({ success: false, message: 'Time limit exceeded' });
+    }
+
+    const questionIds = answers.map(a => a.questionId);
+    const questions = await Question.find({ _id: { $in: questionIds } });
+
+    const questionMap = {};
+    questions.forEach(q => {
+      questionMap[q._id.toString()] = {
+        correctAnswer: q.correctAnswer,
+        questionNumber: q.questionNumber
+      };
+    });
+
+    // Evaluate answers
+    const evaluatedAnswers = answers.map(answer => {
+      const question = questionMap[answer.questionId];
+      const isCorrect = answer.selectedAnswer === question.correctAnswer;
+
+      return {
+        questionId: answer.questionId,
+        questionNumber: question.questionNumber,
+        selectedAnswer: answer.selectedAnswer || null,
+        correctAnswer: question.correctAnswer,
+        isCorrect,
+        timeTakenForQuestion: answer.timeTakenForQuestion || 0
+      };
+    });
+
+    // ✅ Calculate scores
+    const totalMarks = 120;
+    const marksObtained = evaluatedAnswers.filter(a => a.isCorrect).length;
+    const percentage = parseFloat(((marksObtained / totalMarks) * 100).toFixed(2));
+
+    // Create result
+    const result = await Result.create({
+      user: req.user.id,
+      examStartedAt,
+      examSubmittedAt,
+      timeTaken,
+      answers: evaluatedAnswers,
+      totalQuestions: 120,
+      totalMarks,
+      marksObtained,
+      percentage
+    });
+
+    user.examAttempted = true;
+    user.examEndTime = examSubmittedAt;
+    user.canTakeExam = false;
+    await user.save();
+
+    res.status(201).json({
       success: true,
-      message: "Exam submitted successfully",
-      data: student,
-    });
-  } catch (error) {
-    console.error("Submit Exam Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server Error",
-      error: error.message,
-    });
-  }
-};
-
-
-// ===============================
-// GET RESULTS
-// ===============================
-export const getResults = async (req, res) => {
-  try {
-    const { name, type } = req.query;
-
-    let query = {};
-
-    if (name) {
-      query.username = { $regex: name, $options: "i" };
-    }
-
-    let students = await Student.find(query)
-      .select("username marks attendedQuestions timeTaken")
-      .lean();
-
-    // Sort: Highest marks first, then lowest time
-    students.sort((a, b) => {
-      if ((b.marks || 0) !== (a.marks || 0)) {
-        return (b.marks || 0) - (a.marks || 0);
+      message: 'Exam submitted successfully',
+      data: {
+        resultId: result._id,
+        marksObtained: result.marksObtained,
+        totalMarks: result.totalMarks,
+        percentage: result.percentage,
+        questionsAttempted: result.questionsAttempted,
+        correctAnswers: result.correctAnswers,
+        wrongAnswers: result.wrongAnswers
       }
-      return (a.timeTaken || 0) - (b.timeTaken || 0);
     });
-
-    // Add rank
-    const ranked = students.map((student, index) => ({
-      ...student,
-      rank: index + 1,
-      displayTime: `${student.timeTaken || 0} sec`,
-    }));
-
-    if (type === "top") {
-      return res.json(ranked.slice(0, 30));
-    }
-
-    if (type === "waiting") {
-      return res.json(ranked.slice(30, 35));
-    }
-
-    return res.json(ranked);
   } catch (error) {
-    console.error("Get Results Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch results",
-    });
+    console.error('Submit exam error:', error);
+    res.status(500).json({ success: false, message: 'Error submitting exam', error: error.message });
   }
 };
+
+// @desc    Get user's exam result
+// @route   GET /api/exam/result
+// @access  Private/User
+export const getMyResult = async (req, res) => {
+  try {
+    const result = await Result.findOne({ user: req.user.id })
+      .populate({ path: 'user', select: 'fullName email registrationNumber' });
+
+    if (!result) {
+      return res.status(404).json({ success: false, message: 'Result not found. You may not have attempted the exam yet.' });
+    }
+
+    const rank = await Result.countDocuments({
+      $or: [
+        { marksObtained: { $gt: result.marksObtained } },
+        { marksObtained: result.marksObtained, timeTaken: { $lt: result.timeTaken } }
+      ]
+    }) + 1;
+
+    result.rank = rank;
+    await result.save();
+
+    res.status(200).json({ success: true, data: { result } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching result', error: error.message });
+  }
+};
+
+// @desc    Get exam status
+// @route   GET /api/exam/status
+// @access  Private/User
+export const getExamStatus = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        canTakeExam: user.canTakeExam,
+        examAttempted: user.examAttempted,
+        examStartTime: user.examStartTime,
+        isApproved: user.isApproved
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching exam status', error: error.message });
+  }
+};
+
+export default { getExamQuestions, submitExam, getMyResult, getExamStatus };

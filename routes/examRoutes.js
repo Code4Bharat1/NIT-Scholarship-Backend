@@ -1,9 +1,22 @@
-import express from "express";
-import { submitExam, getResults } from "../controllers/examController.js";
+import express from 'express';
+import {
+  getExamQuestions,
+  submitExam,
+  getMyResult,
+  getExamStatus
+} from '../controllers/examController.js';
+import { protect, approvedUserOnly, canTakeExam } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post("/submit-exam", submitExam);
-router.get("/results", getResults);
+// Apply authentication to all routes
+router.use(protect);
+router.use(approvedUserOnly);
+
+// Exam routes
+router.get('/status', getExamStatus);
+router.get('/questions', canTakeExam, getExamQuestions);
+router.post('/submit', submitExam);
+router.get('/result', getMyResult);
 
 export default router;
