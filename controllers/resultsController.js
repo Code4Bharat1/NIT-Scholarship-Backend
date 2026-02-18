@@ -1,5 +1,6 @@
 import Result from '../models/result.model.js';
 import User from '../models/user.model.js';
+import { sendResultPublishedEmail } from '../utils/emailService.js';
 
 // @desc    Get all results with rankings
 // @route   GET /api/admin/results
@@ -108,41 +109,100 @@ export const getLeaderboard = async (req, res) => {
   }
 };
 
-// @desc    Get result by ID (detailed view)
-// @route   GET /api/admin/results/:id
-// @access  Private/Admin
-export const getResultById = async (req, res) => {
-  try {
-    const result = await Result.findById(req.params.id).populate({
-      path: 'user',
-      select: 'fullName email registrationNumber phone institution'
-    });
+// // @desc    Get result by ID (detailed view)
+// // @route   GET /api/admin/results/:id
+// // @access  Private/Admin
+// export const getResultById = async (req, res) => {
+//   try {
+//     const result = await Result.findById(req.params.id).populate({
+//       path: 'user',
+//       select: 'fullName email registrationNumber phone institution'
+//     });
 
-    if (!result) {
+//     if (!result) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Result not found'
+//       });
+//     }
+
+//     // Populate question details in answers
+//     await result.populate({
+//       path: 'answers.questionId',
+//       select: 'questionText options subject difficulty'
+//     });
+
+//     res.status(200).json({
+//       success: true,
+//       data: { result }
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Error fetching result details',
+//       error: error.message
+//     });
+//   }
+// };
+
+
+export const publishResults = async (req, res) => {
+  try {
+    // Step 1: Get all attempted results sorted
+    const results = await Result.find()
+      .populate({
+        path: "user",
+        select: "fullName email"
+      })
+      .sort({ marksObtained: -1, timeTaken: 1 });
+
+    if (!results.length) {
       return res.status(404).json({
         success: false,
-        message: 'Result not found'
+        message: "No results found"
       });
     }
 
-    // Populate question details in answers
-    await result.populate({
-      path: 'answers.questionId',
-      select: 'questionText options subject difficulty'
-    });
+    // Step 2: assign rank
+    for (let i = 0; i < results.length; i++) {
+      results[i].rank = i + 1;
+      await results[i].save();
+    }
 
+    // Step 3: selection rule
+    const SELECTION_LIMIT = 1; // change anytime
+
+    // Step 4: send emails
+    for (const result of results) {
+      if (!result.user?.email) continue;
+
+      const selected = result.rank <= SELECTION_LIMIT;
+
+      await sendResultPublishedEmail(
+        result.user.email,
+        result.user.fullName,
+        selected,
+        result.rank
+      );
+    }
+
+    // ✅ RESPONSE MUST BE OUTSIDE LOOP
     res.status(200).json({
       success: true,
-      data: { result }
+      message: "Results published, ranks calculated and emails sent"
     });
+
   } catch (error) {
+    console.error("Publish error:", error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching result details',
+      message: "Error publishing results",
       error: error.message
     });
   }
 };
+
+
 
 // @desc    Get result by user ID
 // @route   GET /api/admin/results/user/:userId
@@ -286,8 +346,8 @@ export const exportResults = async (req, res) => {
 export default {
   getAllResults,
   getLeaderboard,
-  getResultById,
   getResultByUserId,
   getResultsStats,
-  exportResults
+  exportResults,
+  publishResults   
 };

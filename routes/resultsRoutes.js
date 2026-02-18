@@ -2,10 +2,11 @@ import express from 'express';
 import {
   getAllResults,
   getLeaderboard,
-  getResultById,
+  //getResultById,
   getResultByUserId,
   getResultsStats,
-  exportResults
+  exportResults,
+  publishResults
 } from '../controllers/resultsController.js';
 import { protect, adminOnly } from '../middleware/auth.js';
 
@@ -20,7 +21,10 @@ router.get('/', getAllResults);
 router.get('/leaderboard', getLeaderboard);
 router.get('/stats', getResultsStats);
 router.get('/export', exportResults);
-router.get('/:id', getResultById);
+//router.get('/:id', getResultById);
 router.get('/user/:userId', getResultByUserId);
+router.post("/publish", publishResults);
+
+
 
 export default router;
