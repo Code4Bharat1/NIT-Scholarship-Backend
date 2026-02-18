@@ -94,6 +94,10 @@ const userSchema = new mongoose.Schema({
   },
   examEndTime: {
     type: Date
+  },
+   resultVisible: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true

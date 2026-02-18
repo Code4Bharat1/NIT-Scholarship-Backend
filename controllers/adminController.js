@@ -365,6 +365,28 @@ export const getUserById = async (req, res) => {
   }
 };
 
+
+// 👇 Function export ALAG likhna hai
+export const publishResults = async (req, res) => {
+  try {
+    const result = await Result.updateMany({}, { resultPublished: true });
+
+    res.status(200).json({
+      success: true,
+      message: "Results published successfully",
+      updated: result.modifiedCount,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error publishing results",
+      error: error.message,
+    });
+  }
+};
+
+
+
 export default {
   getPendingUsers,
   getApprovedUsers,
@@ -373,5 +395,6 @@ export default {
   enableExamAccess,
   bulkEnableExam,
   getDashboardStats,
-  getUserById
+  getUserById,
+  
 };

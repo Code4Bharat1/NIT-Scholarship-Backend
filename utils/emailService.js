@@ -197,7 +197,7 @@ export const sendExamNotificationEmail = async (email, name) => {
                 <h3>Exam Details:</h3>
                 <ul>
                   <li><strong>Total Questions:</strong> 120 MCQs</li>
-                  <li><strong>Duration:</strong> 2 hours</li>
+                  <li><strong>Duration:</strong> 1 hours</li>
                   <li><strong>Type:</strong> Multiple Choice Questions</li>
                   <li><strong>Marking:</strong> 1 mark per question</li>
                 </ul>
