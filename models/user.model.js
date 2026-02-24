@@ -89,6 +89,10 @@ city: {
   required: [true, 'City is required'],
   trim: true
 },
+subCity: {
+  type: String,
+  trim: true
+},
 
   
   // Exam Status

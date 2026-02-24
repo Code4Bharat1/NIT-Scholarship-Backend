@@ -2,13 +2,14 @@ import User from "../models/user.model.js";
 import { generateToken, generatePassword } from "../utils/jwtUtils.js";
 import { sendOTPEmail, sendCredentialsEmail } from "../utils/Emailservice.js";
 import { sendOTPSMS, sendMockOTPSMS } from "../utils/Smsservice.js";
+import Location from "../models/location.model.js";
 
 // @desc    Register new user
 // @route   POST /api/auth/register
 // @access  Public
 export const register = async (req, res) => {
   try {
-    const { fullName, email, phone, institution } = req.body;
+    const { fullName, email, phone, institution ,state,city,subCity} = req.body;
 
     // Validate required fields
     if (!fullName || !email || !phone) {
@@ -53,6 +54,9 @@ export const register = async (req, res) => {
       emailOTP,
       smsOTP,
       otpExpires,
+      state,
+      city,
+      subCity
     });
 
     // Send OTP via email
@@ -435,6 +439,18 @@ export const registerAdmin = async (req, res) => {
   }
 };
 
+
+
+
+export const getAllLocations = async (req, res) => {
+  try {
+    const locations = await Location.find(); // should return array
+    res.status(200).json({ success: true, data: locations });
+  } catch (err) {
+    console.error("Error in getAllLocations:", err);  // log full error
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
 export default {
   register,
   registerAdmin,
@@ -443,4 +459,5 @@ export default {
   resendOTP,
   login,
   getMe,
+  getAllLocations
 };

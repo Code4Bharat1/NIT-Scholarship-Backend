@@ -6,7 +6,8 @@ import {
   resendOTP, 
   login,
   getMe, 
-  registerAdmin
+  registerAdmin,
+  getAllLocations
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 
@@ -19,6 +20,7 @@ router.post('/verify-email', verifyEmail);
 router.post('/verify-sms', verifySMS);
 router.post('/resend-otp', resendOTP);
 router.post('/login', login);
+router.get("/locations", getAllLocations);
 
 // Protected routes
 router.get('/me', protect, getMe);
