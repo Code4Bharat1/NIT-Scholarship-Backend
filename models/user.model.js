@@ -75,11 +75,22 @@ const userSchema = new mongoose.Schema({
     unique: true,
     sparse: true
   },
-  institution: {
-    type: String,
-    trim: true
-  },
+ institution: {
+  type: String,
+  trim: true
+},
+state: {
+  type: String,
+  required: [true, 'State is required'],
+  trim: true
+},
+city: {
+  type: String,
+  required: [true, 'City is required'],
+  trim: true
+},
 
+  
   // Exam Status
   canTakeExam: {
     type: Boolean,
