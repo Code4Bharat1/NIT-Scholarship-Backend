@@ -118,7 +118,7 @@ await Location.insertMany([
   {
     state: "Maharashtra",
     cities: [
-      { name: "Mumbai", subCities: ["Andheri", "Bandra", "Dadar","kurla"] },
+      { name: "Mumbai", subCities: ["Andheri", "Bandra", "Dadar",] },
       { name: "Pune", subCities: ["Hinjewadi", "Koregaon Park"] },
       { name: "Nagpur", subCities: ["Sitabuldi", "Civil Lines"] },
       { name: "Nashik", subCities: ["Mahatma Nagar", "College Road"] }

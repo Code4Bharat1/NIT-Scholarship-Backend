@@ -9,7 +9,9 @@ import Location from "../models/location.model.js";
 // @access  Public
 export const register = async (req, res) => {
   try {
+    
     const { fullName, email, phone, institution ,state,city,subCity} = req.body;
+    
 
     // Validate required fields
     if (!fullName || !email || !phone) {
