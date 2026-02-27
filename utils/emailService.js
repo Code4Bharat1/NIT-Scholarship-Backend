@@ -318,4 +318,77 @@ export const sendContactAdminEmail = async (userName, userEmail, userPhone, subj
 };
 
 
+// Send result published email
+export const sendResultPublishedEmail = async (email, name, qualified, rank) => {
+  try {
+    const subject = qualified
+      ? "Result Published - Scholar Portal"
+      : "Result Update - Scholar Portal";
+
+    const resultMessage = qualified
+      ? `
+        <h2>Congratulations ${name}! 🎉</h2>
+        <p>You have performed very well in the exam.</p>
+        <div class="info-box">
+          <p><strong>Your Rank:</strong> ${rank ?? "Available in portal"}</p>
+          <p>You are selected for the next round.</p>
+        </div>
+        <p>Keep up the great work and wish you success ahead!</p>
+      `
+      : `
+        <h2>Hello ${name},</h2>
+        <p>Your exam result has been published.</p>
+        <div class="info-box">
+          <p><strong>Your Rank:</strong> ${rank ?? "Available in portal"}</p>
+          <p>Thank you for participating.</p>
+          <p>Unfortunately, you were not selected this time.</p>
+        </div>
+        <p>Keep learning and improving—we hope to see you again!</p>
+      `;
+
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: subject,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .info-box { background: white; border-left: 4px solid #4facfe; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Exam Result Update</h1>
+            </div>
+            <div class="content">
+              ${resultMessage}
+              <p><strong>Next Step:</strong> Login to Scholar Portal to view details.</p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Scholar Portal. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✉️ Result email sent to ${email}`);
+    return { success: true };
+
+  } catch (error) {
+    console.error("❌ Error sending result email:", error);
+    throw new Error("Failed to send result email");
+  }
+};
+
 export default transporter;
