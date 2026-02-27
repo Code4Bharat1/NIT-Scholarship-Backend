@@ -232,63 +232,75 @@ export const sendExamNotificationEmail = async (email, name) => {
   }
 };
 
-// Send result published email
-export const sendResultPublishedEmail = async (email, name, qualified, rank) => {
+// Send contact admin email (when user reports issue)
+export const sendContactAdminEmail = async (userName, userEmail, userPhone, subject, message) => {
   try {
-
-    const subject = qualified
-      ? "Result Published - Scholar Portal"
-      : "Result Update - Scholar Portal";
-
-    const resultMessage = qualified
-      ? `
-        <h2>Congratulations ${name}! 🎉</h2>
-        <p>You have performed very well in the exam.</p>
-        <div class="info-box">
-          <p><strong>Your Rank:</strong> ${rank ?? "Available in portal"}</p>
-          <p>You are selected for the next round.</p>
-        </div>
-        <p>Keep up the great work and wish you success ahead!</p>
-      `
-      : `
-        <h2>Hello ${name},</h2>
-        <p>Your exam result has been published.</p>
-        <div class="info-box">
-          <p><strong>Your Rank:</strong> ${rank ?? "Available in portal"}</p>
-          <p>Thank you for participating.</p>
-          <p>Unfortunately, you were not selected this time.</p>
-        </div>
-        <p>Keep learning and improving—we hope to see you again!</p>
-      `;
+    // Admin email - can be configured in .env as ADMIN_EMAIL
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@scholarportal.com';
 
     const mailOptions = {
       from: process.env.EMAIL_FROM,
-      to: email,
-      subject: subject,
+      to: adminEmail,
+      replyTo: userEmail, // Admin can reply directly to user
+      subject: `[User Query] ${subject}`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-            .info-box { background: white; border-left: 4px solid #4facfe; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .user-info { background: white; border-left: 4px solid #fa709a; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .info-row { margin: 10px 0; }
+            .label { font-weight: bold; color: #666; display: inline-block; width: 120px; }
+            .value { color: #333; }
+            .message-box { background: #fff; border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 5px; white-space: pre-wrap; }
             .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
-              <h1>Exam Result Update</h1>
+              <h1>📧 New User Query</h1>
             </div>
             <div class="content">
-              ${resultMessage}
-              <p><strong>Next Step:</strong> Login to Scholar Portal to view details.</p>
+              <p>A user has sent you a message through Scholar Portal:</p>
+              
+              <div class="user-info">
+                <h3 style="margin-top: 0;">User Details:</h3>
+                <div class="info-row">
+                  <span class="label">Name:</span>
+                  <span class="value">${userName}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Email:</span>
+                  <span class="value"><a href="mailto:${userEmail}">${userEmail}</a></span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Phone:</span>
+                  <span class="value">${userPhone || 'Not provided'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Subject:</span>
+                  <span class="value"><strong>${subject}</strong></span>
+                </div>
+              </div>
+              
+              <h3>Message:</h3>
+              <div class="message-box">${message}</div>
+              
+              <p><strong>Action Required:</strong></p>
+              <ul>
+                <li>Review the user's query</li>
+                <li>Reply directly to: <a href="mailto:${userEmail}">${userEmail}</a></li>
+                <li>Or login to admin panel to take necessary action</li>
+              </ul>
             </div>
             <div class="footer">
               <p>© ${new Date().getFullYear()} Scholar Portal. All rights reserved.</p>
+              <p style="font-size: 10px; color: #999;">This is an automated notification from Scholar Portal</p>
             </div>
           </div>
         </body>
@@ -297,15 +309,13 @@ export const sendResultPublishedEmail = async (email, name, qualified, rank) => 
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`✉️ Result email sent to ${email}`);
+    console.log(`✉️ Contact admin email sent from ${userEmail}`);
     return { success: true };
-
   } catch (error) {
-    console.error("❌ Error sending result email:", error);
-    throw new Error("Failed to send result email");
+    console.error('❌ Error sending contact admin email:', error);
+    throw new Error('Failed to send contact admin email');
   }
 };
 
 
 export default transporter;
-

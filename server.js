@@ -12,7 +12,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import examRoutes from './routes/examRoutes.js';
 import resultsRoutes from './routes/resultsRoutes.js';
 import feedbackRoutes from './routes/feedbackRoutes.js';
-
+import Contactrouter from './controllers/contactRoutes.js';
 // Load environment variables
 dotenv.config();
 
@@ -75,6 +75,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/exam', examRoutes);
 app.use('/api/admin/results', resultsRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use("/api/contact",Contactrouter)
 
 // Welcome route
 app.get('/', (req, res) => {
