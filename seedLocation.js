@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Location from "./models/location.model.js";
 
-await mongoose.connect("mongodb://localhost:27017/nit_backend");
+await mongoose.connect("mongodb://nit_admin:nexcorealliance@72.62.241.150:27023/nit?authSource=admin");
 
 await Location.deleteMany(); // clear old data
 
