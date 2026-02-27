@@ -11,7 +11,6 @@ export const register = async (req, res) => {
   try {
     
     const { fullName, email, phone, institution ,state,city,subCity} = req.body;
-    
 
     // Validate required fields
     if (!fullName || !email || !phone) {
@@ -46,6 +45,12 @@ export const register = async (req, res) => {
     const smsOTP = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
+    // Handle photo upload
+    let photoBase64 = null;
+    if (req.file) {
+      photoBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    }
+
     // Create user
     const user = await User.create({
       fullName,
@@ -58,7 +63,8 @@ export const register = async (req, res) => {
       otpExpires,
       state,
       city,
-      subCity
+      subCity,
+      photo: photoBase64,
     });
 
     // Send OTP via email
@@ -384,7 +390,6 @@ export const registerAdmin = async (req, res) => {
       });
     }
 
-    // Validate phone number (must be exactly 10 digits)
     if (!/^[0-9]{10}$/.test(phone)) {
       return res.status(400).json({
         success: false,
@@ -392,7 +397,6 @@ export const registerAdmin = async (req, res) => {
       });
     }
 
-    // Check if already exists
     const existingUser = await User.findOne({
       $or: [{ email }, { phone }],
     });
@@ -404,7 +408,6 @@ export const registerAdmin = async (req, res) => {
       });
     }
 
-    // Create admin — no OTP needed, no approval needed
     const admin = await User.create({
       fullName,
       email,
@@ -441,18 +444,16 @@ export const registerAdmin = async (req, res) => {
   }
 };
 
-
-
-
 export const getAllLocations = async (req, res) => {
   try {
-    const locations = await Location.find(); // should return array
+    const locations = await Location.find();
     res.status(200).json({ success: true, data: locations });
   } catch (err) {
-    console.error("Error in getAllLocations:", err);  // log full error
+    console.error("Error in getAllLocations:", err);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+
 export default {
   register,
   registerAdmin,

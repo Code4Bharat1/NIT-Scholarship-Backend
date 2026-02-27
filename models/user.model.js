@@ -93,6 +93,10 @@ subCity: {
   type: String,
   trim: true
 },
+photo: {
+  type: String,
+  default: null
+},
 
   
   // Exam Status
