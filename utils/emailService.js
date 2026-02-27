@@ -232,10 +232,95 @@ export const sendExamNotificationEmail = async (email, name) => {
   }
 };
 
+// Send contact admin email (when user reports issue)
+export const sendContactAdminEmail = async (userName, userEmail, userPhone, subject, message) => {
+  try {
+    // Admin email - can be configured in .env as ADMIN_EMAIL
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@scholarportal.com';
+
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to: adminEmail,
+      replyTo: userEmail, // Admin can reply directly to user
+      subject: `[User Query] ${subject}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .user-info { background: white; border-left: 4px solid #fa709a; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .info-row { margin: 10px 0; }
+            .label { font-weight: bold; color: #666; display: inline-block; width: 120px; }
+            .value { color: #333; }
+            .message-box { background: #fff; border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 5px; white-space: pre-wrap; }
+            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>📧 New User Query</h1>
+            </div>
+            <div class="content">
+              <p>A user has sent you a message through Scholar Portal:</p>
+              
+              <div class="user-info">
+                <h3 style="margin-top: 0;">User Details:</h3>
+                <div class="info-row">
+                  <span class="label">Name:</span>
+                  <span class="value">${userName}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Email:</span>
+                  <span class="value"><a href="mailto:${userEmail}">${userEmail}</a></span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Phone:</span>
+                  <span class="value">${userPhone || 'Not provided'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Subject:</span>
+                  <span class="value"><strong>${subject}</strong></span>
+                </div>
+              </div>
+              
+              <h3>Message:</h3>
+              <div class="message-box">${message}</div>
+              
+              <p><strong>Action Required:</strong></p>
+              <ul>
+                <li>Review the user's query</li>
+                <li>Reply directly to: <a href="mailto:${userEmail}">${userEmail}</a></li>
+                <li>Or login to admin panel to take necessary action</li>
+              </ul>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Scholar Portal. All rights reserved.</p>
+              <p style="font-size: 10px; color: #999;">This is an automated notification from Scholar Portal</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✉️ Contact admin email sent from ${userEmail}`);
+    return { success: true };
+  } catch (error) {
+    console.error('❌ Error sending contact admin email:', error);
+    throw new Error('Failed to send contact admin email');
+  }
+};
+
+
 // Send result published email
 export const sendResultPublishedEmail = async (email, name, qualified, rank) => {
   try {
-
     const subject = qualified
       ? "Result Published - Scholar Portal"
       : "Result Update - Scholar Portal";
@@ -306,6 +391,4 @@ export const sendResultPublishedEmail = async (email, name, qualified, rank) => 
   }
 };
 
-
 export default transporter;
-
