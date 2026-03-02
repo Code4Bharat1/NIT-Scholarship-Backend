@@ -30,7 +30,7 @@ transporter.verify((error, success) => {
 export const sendOTPEmail = async (email, otp, name) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from: `"NIT Admin"<process.env.EMAIL_FROM>`,
       to: email,
       subject: 'Email Verification - Scholar Portal',
       html: `
@@ -59,7 +59,7 @@ export const sendOTPEmail = async (email, otp, name) => {
               <div class="otp-box">
                 <p style="margin: 0; font-size: 14px; color: #666;">Your OTP is:</p>
                 <div class="otp">${otp}</div>
-                <p style="margin: 10px 0 0 0; font-size: 12px; color: #999;">Valid for 10 minutes</p>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #999;">Valid for 05 minutes</p>
               </div>
               
               <p><strong>Important:</strong> After email and SMS verification, an admin will review your registration. You'll receive login credentials once approved.</p>
@@ -88,7 +88,7 @@ export const sendOTPEmail = async (email, otp, name) => {
 export const sendCredentialsEmail = async (email, name, registrationNumber, password) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from:  `"NIT Admin"<process.env.EMAIL_FROM>`,
       to: email,
       subject: 'Registration Approved - Login Credentials',
       html: `
@@ -168,7 +168,7 @@ export const sendCredentialsEmail = async (email, name, registrationNumber, pass
 export const sendExamNotificationEmail = async (email, name) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from: `"NIT Admin"<process.env.EMAIL_FROM>`,
       to: email,
       subject: 'Exam Access Enabled - Scholar Portal',
       html: `
@@ -236,10 +236,10 @@ export const sendExamNotificationEmail = async (email, name) => {
 export const sendContactAdminEmail = async (userName, userEmail, userPhone, subject, message) => {
   try {
     // Admin email - can be configured in .env as ADMIN_EMAIL
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@scholarportal.com';
+    const adminEmail =  `"NIT Admin"<process.env.EMAIL_FROM>` || 'admin@scholarportal.com';
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from:  `"NIT Admin"<process.env.EMAIL_FROM>`,
       to: adminEmail,
       replyTo: userEmail, // Admin can reply directly to user
       subject: `[User Query] ${subject}`,
@@ -347,7 +347,7 @@ export const sendResultPublishedEmail = async (email, name, qualified, rank) => 
       `;
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from:  `"NIT Admin"<process.env.EMAIL_FROM>`,
       to: email,
       subject: subject,
       html: `
