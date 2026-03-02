@@ -3,14 +3,14 @@ import { generateToken, generatePassword } from "../utils/jwtUtils.js";
 import { sendOTPEmail, sendCredentialsEmail } from "../utils/Emailservice.js";
 import { sendOTPSMS, sendMockOTPSMS } from "../utils/Smsservice.js";
 import Location from "../models/location.model.js";
+import { sendWhatsAppOTP } from "../utils/whatsappService.js";
 
 // @desc    Register new user
 // @route   POST /api/auth/register
 // @access  Public
 export const register = async (req, res) => {
   try {
-    
-    const { fullName, email, phone, institution ,state,city,subCity} = req.body;
+    const { fullName, email, phone, institution, state, city, subCity } = req.body;
 
     // Validate required fields
     if (!fullName || !email || !phone) {
@@ -19,12 +19,14 @@ export const register = async (req, res) => {
         message: "Please provide all required fields",
       });
     }
+
     if (!/^[0-9]{10}$/.test(phone)) {
       return res.status(400).json({
         success: false,
         message: "Phone number must be exactly 10 digits",
       });
     }
+
     // Check if user already exists
     const existingUser = await User.findOne({
       $or: [{ email }, { phone }],
@@ -42,8 +44,8 @@ export const register = async (req, res) => {
 
     // Generate OTPs
     const emailOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    const smsOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const whatsappOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     // Handle photo upload
     let photoBase64 = null;
@@ -59,7 +61,7 @@ export const register = async (req, res) => {
       institution,
       password: tempPassword,
       emailOTP,
-      smsOTP,
+      smsOTP: whatsappOTP, // keeping field same for compatibility
       otpExpires,
       state,
       city,
@@ -67,28 +69,24 @@ export const register = async (req, res) => {
       photo: photoBase64,
     });
 
-    // Send OTP via email
+    // Send Email OTP
     try {
       await sendOTPEmail(email, emailOTP, fullName);
     } catch (error) {
       console.error("Error sending email OTP:", error);
     }
 
-    // Send OTP via SMS (use mock in development)
+    // ✅ Send WhatsApp OTP instead of SMS
     try {
-      if (process.env.NODE_ENV === "production") {
-        await sendOTPSMS(phone, smsOTP, fullName);
-      } else {
-        await sendMockOTPSMS(phone, smsOTP, fullName);
-      }
+      await sendWhatsAppOTP(phone, whatsappOTP, fullName);
     } catch (error) {
-      console.error("Error sending SMS OTP:", error);
+      console.error("Error sending WhatsApp OTP:", error);
     }
 
     res.status(201).json({
       success: true,
       message:
-        "Registration successful! Please verify your email and phone number.",
+        "Registration successful! Please verify your email and WhatsApp number.",
       data: {
         userId: user._id,
         registrationNumber: user.registrationNumber,
@@ -96,6 +94,7 @@ export const register = async (req, res) => {
         phone: user.phone,
       },
     });
+
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({
