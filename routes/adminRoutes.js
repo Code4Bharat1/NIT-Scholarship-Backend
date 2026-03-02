@@ -7,7 +7,10 @@ import {
   enableExamAccess,
   bulkEnableExam,
   getDashboardStats,
-  getUserById
+  getUserById,
+  publishResults,
+  setExamDates,
+  getExamDates,
 } from '../controllers/adminController.js';
 import { protect, adminOnly } from '../middleware/auth.js';
 
@@ -28,5 +31,12 @@ router.get('/users/:id', getUserById);
 router.post('/users/:id/approve', approveUser);
 router.post('/users/:id/enable-exam', enableExamAccess);
 router.post('/users/bulk-enable-exam', bulkEnableExam);
+
+// Results
+router.post('/results/publish', publishResults);
+
+// Exam dates
+router.post('/exam-dates', setExamDates);
+router.get('/exam-dates', getExamDates);
 
 export default router;

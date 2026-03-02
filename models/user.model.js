@@ -117,7 +117,11 @@ photo: {
    resultVisible: {
     type: Boolean,
     default: false
-  }
+  },
+  examDate: {
+  type: Date,
+  default: null
+},
 }, {
   timestamps: true
 });
