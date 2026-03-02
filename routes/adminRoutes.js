@@ -12,6 +12,10 @@ import {
   setExamDates,
   getExamDates,
 } from '../controllers/adminController.js';
+
+// ✅ NEW: import export controllers
+import { exportUsersCSV, exportUsersPDF } from '../controllers/adminexport.js';
+
 import { protect, adminOnly } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -20,23 +24,27 @@ const router = express.Router();
 router.use(protect);
 router.use(adminOnly);
 
-// Dashboard
+// ── Dashboard ────────────────────────────────────────────────
 router.get('/dashboard/stats', getDashboardStats);
 
-// User management
-router.get('/users', getAllUsers);
-router.get('/users/pending', getPendingUsers);
-router.get('/users/approved', getApprovedUsers);
-router.get('/users/:id', getUserById);
-router.post('/users/:id/approve', approveUser);
-router.post('/users/:id/enable-exam', enableExamAccess);
+// ── User management ──────────────────────────────────────────
+router.get('/users',                   getAllUsers);
+router.get('/users/pending',           getPendingUsers);
+router.get('/users/approved',          getApprovedUsers);
+router.get('/users/:id',               getUserById);
+router.post('/users/:id/approve',      approveUser);
+router.post('/users/:id/enable-exam',  enableExamAccess);
 router.post('/users/bulk-enable-exam', bulkEnableExam);
 
-// Results
+// ── Results ──────────────────────────────────────────────────
 router.post('/results/publish', publishResults);
 
-// Exam dates
+// ── Exam dates ───────────────────────────────────────────────
 router.post('/exam-dates', setExamDates);
-router.get('/exam-dates', getExamDates);
+router.get('/exam-dates',  getExamDates);
+
+// ── ✅ Export routes ──────────────────────────────────────────
+router.get('/export/csv', exportUsersCSV);   // → downloads .xlsx
+router.get('/export/pdf', exportUsersPDF);   // → downloads .pdf
 
 export default router;
