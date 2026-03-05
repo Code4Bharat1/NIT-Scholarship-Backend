@@ -29,7 +29,11 @@ app.use(helmet());
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://scholarship.nexcoreinstitute.org/',
+  origin: [
+    "https://scholarship.nexcoreinstitute.org",
+    "https://www.scholarship.nexcoreinstitute.org"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
 
