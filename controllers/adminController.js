@@ -1,7 +1,7 @@
 import User from '../models/user.model.js';
 import Result from '../models/result.model.js';
 import { generatePassword } from '../utils/jwtUtils.js';
-import { sendCredentialsEmail, sendExamNotificationEmail } from '../utils/Emailservice.js';
+import { sendCredentialsEmail, sendExamNotificationEmail, sendResultPublishedEmail } from '../utils/emailService.js';
 import ExamDate from '../models/examdate.model.js';
 
 // ✅ Timezone-safe date converter (fixes UTC → IST shifting bug)
@@ -330,12 +330,36 @@ export const getUserById = async (req, res) => {
 // @access  Private/Admin
 export const publishResults = async (req, res) => {
   try {
-    const result = await Result.updateMany({}, { resultPublished: true });
+    // Step 1: Fetch all results with user info, sorted by rank
+    const results = await Result.find({}).populate('user', 'email fullName').sort({ rank: 1 });
+
+   
+
+    // Step 2: Send email to each user
+    let emailsSent = 0;
+    for (const result of results) {
+      if (!result.user?.email) continue;
+      try {
+        const qualified = result.rank !== null && result.rank <= 250;
+
+        await sendResultPublishedEmail(
+          result.user.email,
+          result.user.fullName,
+          qualified,
+          result.rank
+        );
+        emailsSent++;
+      } catch (err) {
+        console.error(`❌ Failed to send to ${result.user.email}:`, err.message);
+      }
+    }
+
+   
 
     res.status(200).json({
       success: true,
-      message: "Results published successfully",
-      updated: result.modifiedCount,
+      message: `Results published. Emails sent to ${emailsSent} users.`,
+      updated: results.length,
     });
   } catch (error) {
     res.status(500).json({
@@ -345,7 +369,6 @@ export const publishResults = async (req, res) => {
     });
   }
 };
-
 // @desc    Save exam dates
 // @route   POST /api/admin/exam-dates
 // @access  Private/Admin
@@ -401,6 +424,7 @@ export const getExamDates = async (req, res) => {
     });
   }
 };
+
 
 export default {
   getPendingUsers,

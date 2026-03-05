@@ -397,11 +397,14 @@ export const sendResultPublishedEmail = async (email, name, qualified, rank) => 
 
 // ── Send registration confirmation email with admit card PDF ──
 export const sendRegistrationConfirmationEmail = async (email, fullName, registrationNumber, pdfBuffer) => {
-  const mailOptions = {
-    from: `"Nexcore Institute of Technology" <${process.env.EMAIL_FROM}>`,
-    to: email,
-    subject: `Registration Confirmed — ${registrationNumber} | Nexcore Institute`,
-    html: `
+  try {
+    if (!pdfBuffer) throw new Error('pdfBuffer is null or undefined — generateAdmitCard() may have failed');
+
+    const mailOptions = {
+      from: `"Nexcore Institute of Technology" <${process.env.EMAIL_FROM}>`,
+      to: email,
+      subject: `Registration Confirmed — ${registrationNumber} | Nexcore Institute`,
+      html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -507,17 +510,22 @@ export const sendRegistrationConfirmationEmail = async (email, fullName, registr
       </body>
       </html>
     `,
-    attachments: [
-      {
-        filename: `AdmitCard_${registrationNumber}.pdf`,
-        content:  pdfBuffer,           // Buffer from generateAdmitCard()
-        contentType: 'application/pdf',
-      },
-    ],
-  };
+      attachments: [
+        {
+          filename: `AdmitCard_${registrationNumber}.pdf`,
+          content:  pdfBuffer,           // Buffer from generateAdmitCard()
+          contentType: 'application/pdf',
+        },
+      ],
+    };
 
-  // Use your existing transporter (same one used in sendOTPEmail etc.)
-  await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✉️ Registration confirmation sent to ${email} — MessageId: ${info.messageId}`);
+    return { success: true };
+  } catch (error) {
+    console.error('❌ Error sending registration confirmation email:', error.message);
+    throw new Error('Failed to send registration confirmation email');
+  }
 };
 
 export default transporter;

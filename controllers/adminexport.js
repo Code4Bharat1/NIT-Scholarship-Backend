@@ -200,8 +200,6 @@ export const exportUsersCSV = async (req, res) => {
       { header: 'Full Name',        key: 'fullName',  width: 26 },
       { header: 'Email',            key: 'email',     width: 32 },
       { header: 'Phone',            key: 'phone',     width: 16 },
-      { header: 'Gender',           key: 'gender',    width: 10 },
-      { header: 'Date of Birth',    key: 'dob',       width: 15 },
       { header: 'City',             key: 'city',      width: 16 },
       { header: 'State',            key: 'state',     width: 18 },
       { header: 'Exam Date',        key: 'examDate',  width: 14 },
