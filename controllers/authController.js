@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 import { generateToken, generatePassword } from "../utils/jwtUtils.js";
-import { sendOTPEmail, sendCredentialsEmail, sendRegistrationConfirmationEmail } from "../utils/Emailservice.js";
+import { sendOTPEmail, sendCredentialsEmail, sendRegistrationConfirmationEmail } from "../utils/emailService.js";
 import { sendOTPSMS, sendMockOTPSMS } from "../utils/Smsservice.js";
 import Location from "../models/location.model.js";
 import { sendWhatsAppOTP } from "../utils/whatsappService.js";

@@ -19,6 +19,8 @@ dotenv.config();
 // Initialize express app
 const app = express();
 
+app.set('trust proxy', 1);
+
 // Connect to database
 connectDB();
 
@@ -27,7 +29,13 @@ app.use(helmet());
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    "https://scholarship.nexcoreinstitute.org",
+    "https://www.scholarship.nexcoreinstitute.org",
+    "http://localhost:3000",
+    "http://localhost:3001"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
 

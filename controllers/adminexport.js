@@ -12,12 +12,18 @@ const __dirname  = path.dirname(__filename);
 // ── Helpers ───────────────────────────────────────────────────
 const fmt     = (v) => (v != null && v !== '' ? String(v) : '-');
 const fmtBool = (v) => (v ? 'Yes' : 'No');
+
+// ✅ KEY FIX: examDate is now a Date object in DB (not string)
+// Use timeZone: 'Asia/Kolkata' so date displays correctly in IST
 const fmtDate = (d) => {
   if (!d) return '-';
   const date = new Date(d);
   return isNaN(date.getTime())
     ? '-'
-    : date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    : date.toLocaleDateString('en-IN', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        timeZone: 'Asia/Kolkata'  // ✅ prevents UTC midnight → IST previous day
+      });
 };
 
 // hex colour → pdf-lib rgb()
@@ -38,13 +44,11 @@ const WHITE   = rgb(1, 1, 1);
 // ── Page geometry (A4 in pdf-lib: y=0 at BOTTOM) ─────────────
 const PAGE_W   = 595.28;
 const PAGE_H   = 841.89;
-// Letterhead header ends ~100pt from top  → y = PAGE_H - 100
-// Letterhead footer starts ~95pt from bottom → y = 95
-const TOP_Y    = PAGE_H - 108;   // where content starts (below letterhead header)
-const BOT_Y    = 98;              // where content ends   (above letterhead footer)
-const ML       = 38;              // margin left
-const MR       = 38;              // margin right
-const TW       = PAGE_W - ML - MR; // table width ≈ 519
+const TOP_Y    = PAGE_H - 108;
+const BOT_Y    = 98;
+const ML       = 38;
+const MR       = 38;
+const TW       = PAGE_W - ML - MR;
 const ROW_H    = 18;
 
 // ── Column definitions ────────────────────────────────────────
@@ -61,7 +65,6 @@ const RAW_COLS = [
 const totalRaw = RAW_COLS.reduce((s, c) => s + c.w, 0);
 const COLS     = RAW_COLS.map(c => ({ label: c.label, w: Math.round(c.w * TW / totalRaw) }));
 
-// Rows that fit per page
 const ROWS_FIRST = Math.floor((TOP_Y - 58 - BOT_Y) / ROW_H) - 1;
 const ROWS_REST  = Math.floor((TOP_Y - 18 - BOT_Y) / ROW_H) - 1;
 
@@ -74,19 +77,17 @@ function drawPage(page, usersSlice, pageNum, totalPages, totalUsers, isFirst, fo
   let y = TOP_Y;
 
   if (isFirst) {
-    // ── Report title ─────────────────────────────────────────
     page.drawText('Student Details Report', {
-      x: ML, y: y, size: 13, font: bold, color: NAVY,
+      x: ML, y, size: 13, font: bold, color: NAVY,
     });
     y -= 15;
 
-    const now = new Date().toLocaleString('en-IN');
+    const now = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
     page.drawText(`Generated: ${now}   \u2022   Total Students: ${totalUsers}`, {
-      x: ML, y: y, size: 8, font: regular, color: TXT2,
+      x: ML, y, size: 8, font: regular, color: TXT2,
     });
     y -= 8;
 
-    // Gold divider line
     page.drawLine({ start: { x: ML, y }, end: { x: PAGE_W - MR, y }, thickness: 1.5, color: GOLD });
     y -= 14;
   } else {
@@ -117,24 +118,22 @@ function drawPage(page, usersSlice, pageNum, totalPages, totalUsers, isFirst, fo
 
     page.drawRectangle({ x: ML, y: y - ROW_H, width: TW, height: ROW_H, color: bg });
 
-    // bottom border
     page.drawLine({
       start: { x: ML, y: y - ROW_H },
       end:   { x: ML + TW, y: y - ROW_H },
       thickness: 0.3, color: BORDER,
     });
 
-    // cell text
     const vals = [
       fmt(u.sno), fmt(u.reg), fmt(u.name),
-      fmt(u.email), fmt(u.phone), fmt(u.examDate),
+      fmt(u.email), fmt(u.phone),
+      u.examDate,   // ✅ already formatted via fmtDate() in payload builder
       fmt(u.approved), fmt(u.attempted),
     ];
 
     xi = ML;
     for (let ci = 0; ci < COLS.length; ci++) {
       const col      = COLS[ci];
-      // ~4.4 pts per char at size 7.5 in Helvetica
       const maxChars = Math.max(3, Math.floor(col.w / 4.4) - 1);
       let   txt      = vals[ci] || '';
       if (txt.length > maxChars) txt = txt.slice(0, maxChars - 1) + '\u2026';
@@ -149,8 +148,8 @@ function drawPage(page, usersSlice, pageNum, totalPages, totalUsers, isFirst, fo
   }
 
   // ── Page number ────────────────────────────────────────────
-  const pgTxt  = `Page ${pageNum} of ${totalPages}`;
-  const pgW    = pgTxt.length * 4; // rough width
+  const pgTxt = `Page ${pageNum} of ${totalPages}`;
+  const pgW   = pgTxt.length * 4;
   page.drawText(pgTxt, {
     x: (PAGE_W - pgW) / 2, y: 78, size: 7.5, font: regular, color: TXT2,
   });
@@ -188,11 +187,12 @@ export const exportUsersCSV = async (req, res) => {
     // Branding row 2
     sheet.mergeCells('A2:N2');
     const t2      = sheet.getCell('A2');
-    t2.value      = 'Student Details Report  \u2022  Generated: ' + new Date().toLocaleString('en-IN');
+    t2.value      = 'Student Details Report  \u2022  Generated: ' +
+      new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
     t2.font       = { name: 'Calibri', size: 10, italic: true, color: { argb: 'FF555555' } };
     t2.alignment  = { horizontal: 'center', vertical: 'middle' };
     sheet.getRow(2).height = 20;
-    sheet.addRow([]); // spacer
+    sheet.addRow([]);
 
     const columns = [
       { header: '#',                key: 'sno',       width: 6  },
@@ -219,21 +219,30 @@ export const exportUsersCSV = async (req, res) => {
       cell.font      = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
       cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
       cell.border    = {
-        top: { style: 'thin', color: { argb: 'FF8EA8C8' } }, bottom: { style: 'thin', color: { argb: 'FF8EA8C8' } },
-        left: { style: 'thin', color: { argb: 'FF8EA8C8' } }, right: { style: 'thin', color: { argb: 'FF8EA8C8' } },
+        top:    { style: 'thin', color: { argb: 'FF8EA8C8' } },
+        bottom: { style: 'thin', color: { argb: 'FF8EA8C8' } },
+        left:   { style: 'thin', color: { argb: 'FF8EA8C8' } },
+        right:  { style: 'thin', color: { argb: 'FF8EA8C8' } },
       };
     });
 
     // Data rows
     users.forEach((u, i) => {
       const row = sheet.addRow({
-        sno: i + 1, regNo: fmt(u.registrationNumber), fullName: fmt(u.fullName),
-        email: fmt(u.email), phone: fmt(u.phone), gender: fmt(u.gender),
-        dob: fmtDate(u.dateOfBirth), city: fmt(u.city), state: fmt(u.state),
-        examDate: fmt(u.examDate), emailVer: fmtBool(u.isEmailVerified),
-        smsVer: fmtBool(u.isSmsVerified), approved: fmtBool(u.isApproved),
-        attempted: fmtBool(u.examAttempted),
+        sno:      i + 1,
+        regNo:    fmt(u.registrationNumber),
+        fullName: fmt(u.fullName),
+        email:    fmt(u.email),
+        phone:    fmt(u.phone),
+        city:     fmt(u.city),
+        state:    fmt(u.state),
+        examDate: fmtDate(u.examDate),  // ✅ FIX: was fmt() before — now properly formats Date object
+        emailVer: fmtBool(u.isEmailVerified),
+        smsVer:   fmtBool(u.isSmsVerified),
+        approved: fmtBool(u.isApproved),
+        attempted:fmtBool(u.examAttempted),
       });
+
       const bg = i % 2 === 0 ? 'FFF4F6FA' : 'FFFFFFFF';
       row.height = 20;
       row.eachCell({ includeEmpty: true }, cell => {
@@ -241,8 +250,10 @@ export const exportUsersCSV = async (req, res) => {
         cell.font      = { name: 'Calibri', size: 10 };
         cell.alignment = { vertical: 'middle', horizontal: 'center' };
         cell.border    = {
-          top: { style: 'hair', color: { argb: 'FFD0D8E8' } }, bottom: { style: 'hair', color: { argb: 'FFD0D8E8' } },
-          left: { style: 'hair', color: { argb: 'FFD0D8E8' } }, right: { style: 'hair', color: { argb: 'FFD0D8E8' } },
+          top:    { style: 'hair', color: { argb: 'FFD0D8E8' } },
+          bottom: { style: 'hair', color: { argb: 'FFD0D8E8' } },
+          left:   { style: 'hair', color: { argb: 'FFD0D8E8' } },
+          right:  { style: 'hair', color: { argb: 'FFD0D8E8' } },
         };
       });
       row.getCell('fullName').alignment = { vertical: 'middle', horizontal: 'left' };
@@ -284,20 +295,19 @@ export const exportUsersPDF = async (req, res) => {
       .select('-password')
       .sort({ createdAt: -1 });
 
-    // ── Build payload ─────────────────────────────────────────
+    // ✅ FIX: fmtDate() used for examDate — handles Date object correctly with IST timezone
     const payload = users.map((u, i) => ({
       sno:      i + 1,
       reg:      fmt(u.registrationNumber),
       name:     fmt(u.fullName),
       email:    fmt(u.email),
       phone:    fmt(u.phone),
-      examDate: fmt(u.examDate),
+      examDate: fmtDate(u.examDate),  // ✅ was fmt() before → showed raw ISO string or '-'
       approved: fmtBool(u.isApproved),
       attempted:fmtBool(u.examAttempted),
     }));
 
     // ── Load letterhead PDF bytes ─────────────────────────────
-    // Place the PDF at:  src/assets/Nexcore_Institute_Letter_Head.pdf
     const lhPath  = path.join(__dirname, '../assets/Nexcore_Institute_Letter_Head.pdf');
     const lhBytes = fs.readFileSync(lhPath);
 
@@ -305,7 +315,6 @@ export const exportUsersPDF = async (req, res) => {
     const pdfDoc = await PDFDocument.create();
     pdfDoc.registerFontkit(fontkit);
 
-    // Embed standard fonts
     const boldFont    = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fonts       = { bold: boldFont, regular: regularFont };
@@ -319,23 +328,20 @@ export const exportUsersPDF = async (req, res) => {
       idx += cap;
       p++;
     }
-    // Edge case: no users → at least 1 page
     if (chunks.length === 0) chunks.push([]);
 
     const totalPages = chunks.length;
 
     // ── For each chunk: embed letterhead + draw data ──────────
     for (let i = 0; i < chunks.length; i++) {
-      // Load a fresh copy of the letterhead for each page
-      const lhDoc      = await PDFDocument.load(lhBytes);
-      const [lhPage]   = await pdfDoc.copyPages(lhDoc, [0]);
+      const lhDoc    = await PDFDocument.load(lhBytes);
+      const [lhPage] = await pdfDoc.copyPages(lhDoc, [0]);
       pdfDoc.addPage(lhPage);
 
       const page = pdfDoc.getPage(i);
       drawPage(page, chunks[i], i + 1, totalPages, payload.length, i === 0, fonts);
     }
 
-    // ── Serialise and send ────────────────────────────────────
     const pdfBytes = await pdfDoc.save();
     const buffer   = Buffer.from(pdfBytes);
     const filename = `nexcore_students_${Date.now()}.pdf`;
