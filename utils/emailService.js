@@ -528,4 +528,234 @@ export const sendRegistrationConfirmationEmail = async (email, fullName, registr
   }
 };
 
+// ── Send exam reschedule opportunity email (missed 27, 28, 29) ──
+export const sendExamRescheduleEmail = async (email, name, examLink) => {
+  try {
+    const mailOptions = {
+      from: `"NIT Admin" <${process.env.EMAIL_FROM}>`,
+      to: email,
+      subject: 'Exam Rescheduled — Attempt on 30th | Scholar Portal',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .info-box { background: white; border-left: 4px solid #f7971e; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .btn { display: inline-block; background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); color: white !important; text-decoration: none; padding: 14px 36px; border-radius: 8px; font-weight: bold; font-size: 16px; margin: 20px 0; }
+            .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
+            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>📅 Exam Rescheduled for You</h1>
+            </div>
+            <div class="content">
+              <h2>Hello ${name}!</h2>
+              <p>We noticed that you were unable to attempt the exam on the scheduled dates: <strong>27th, 28th, and 29th</strong>.</p>
+              <p>We're giving you another opportunity to take the exam. Please find the details below:</p>
+
+              <div class="info-box">
+                <h3 style="margin-top: 0;">📌 Rescheduled Exam Details:</h3>
+                <ul>
+                  <li><strong>New Exam Date:</strong> 30th</li>
+                  <li><strong>Total Questions:</strong> 120 MCQs</li>
+                  <li><strong>Duration:</strong> 2 hours</li>
+                  <li><strong>Marking:</strong> 1 mark per question</li>
+                </ul>
+              </div>
+
+              <div class="warning">
+                <strong>⚠️ Please Note:</strong> This is an additional opportunity provided to you. Make sure you attempt the exam on <strong>30th</strong> without fail.
+              </div>
+
+              <p style="text-align: center;">
+                <a href="${examLink}" class="btn">👉 Click Here to Take the Exam</a>
+              </p>
+
+              <p><strong>Instructions:</strong></p>
+              <ul>
+                <li>Login with your credentials before clicking the link</li>
+                <li>Read all instructions carefully before starting</li>
+                <li>Once started, the timer cannot be paused</li>
+                <li>Ensure a stable internet connection</li>
+                <li>Submit before time expires</li>
+              </ul>
+
+              <p>All the best! 🎓</p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Scholar Portal. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✉️ Exam reschedule email sent to ${email} — MessageId: ${info.messageId}`);
+    return { success: true };
+  } catch (error) {
+    console.error('❌ Error sending exam reschedule email:', error.message);
+    throw new Error('Failed to send exam reschedule email');
+  }
+};
+
+
+// ── Send last chance exam email (missed 27, 28, 29, 30) ──────
+export const sendLastChanceExamEmail = async (email, name, examLink) => {
+  try {
+    const mailOptions = {
+      from: `"NIT Admin" <${process.env.EMAIL_FROM}>`,
+      to: email,
+      subject: '⚠️ Last Chance to Attempt Exam — Scholar Portal',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .info-box { background: white; border-left: 4px solid #cb2d3e; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .btn { display: inline-block; background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%); color: white !important; text-decoration: none; padding: 14px 36px; border-radius: 8px; font-weight: bold; font-size: 16px; margin: 20px 0; }
+            .danger { background: #fdecea; border-left: 4px solid #cb2d3e; padding: 15px; margin: 20px 0; border-radius: 5px; color: #7b1a1a; }
+            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🚨 Last Chance — Act Now!</h1>
+            </div>
+            <div class="content">
+              <h2>Hello ${name}!</h2>
+              <p>You have missed the exam on <strong>27th, 28th, 29th, and 30th</strong>. This is your <strong>final opportunity</strong> to attempt the exam.</p>
+
+              <div class="danger">
+                <strong>🚨 FINAL WARNING:</strong> If you do not attempt the exam now by clicking the link below, your application will be marked as <strong>incomplete</strong> and you will <strong>not</strong> be considered for the scholarship.
+              </div>
+
+              <div class="info-box">
+                <h3 style="margin-top: 0;">📌 Last Chance Exam Details:</h3>
+                <ul>
+                  <li><strong>Total Questions:</strong> 120 MCQs</li>
+                  <li><strong>Duration:</strong> 2 hours</li>
+                  <li><strong>Marking:</strong> 1 mark per question</li>
+                  <li><strong>Deadline:</strong> Attempt immediately — no further extensions will be granted</li>
+                </ul>
+              </div>
+
+              <p style="text-align: center;">
+                <a href="${examLink}" class="btn">👉 Click Here — Take the Exam Now</a>
+              </p>
+
+              <p><strong>Instructions:</strong></p>
+              <ul>
+                <li>Login with your credentials before clicking the link</li>
+                <li>Read all instructions carefully before starting</li>
+                <li>Once started, the timer cannot be paused</li>
+                <li>Ensure a stable internet connection</li>
+                <li>Submit before time expires</li>
+              </ul>
+
+              <p>We sincerely hope you take this opportunity. All the best! 🎓</p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Scholar Portal. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✉️ Last chance exam email sent to ${email} — MessageId: ${info.messageId}`);
+    return { success: true };
+  } catch (error) {
+    console.error('❌ Error sending last chance exam email:', error.message);
+    throw new Error('Failed to send last chance exam email');
+  }
+};
+
+// ── Send exam reminder email (already enabled, not yet attempted) ──
+export const sendExamReminderEmail = async (email, name) => {
+  try {
+    const mailOptions = {
+      from: `"NIT Admin" <${process.env.EMAIL_FROM}>`,
+      to: email,
+      subject: '⏰ Reminder: Your Exam is Waiting — Scholar Portal',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .info-box { background: white; border-left: 4px solid #f7971e; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
+            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>⏰ Don't Forget Your Exam!</h1>
+            </div>
+            <div class="content">
+              <h2>Hello ${name}!</h2>
+              <p>This is a reminder that your exam access is <strong>already enabled</strong>. Please login and attempt your exam as soon as possible.</p>
+
+              <div class="info-box">
+                <h3 style="margin-top: 0;">📝 Exam Details:</h3>
+                <ul>
+                  <li><strong>Total Questions:</strong> 120 MCQs</li>
+                  <li><strong>Duration:</strong> 2 hours</li>
+                  <li><strong>Type:</strong> Multiple Choice Questions</li>
+                  <li><strong>Marking:</strong> 1 mark per question</li>
+                </ul>
+              </div>
+
+              <div class="warning">
+                <strong>⚠️ Important:</strong> Do not delay — attempt your exam before the deadline. Once the window closes, no further attempts will be allowed.
+              </div>
+
+              <p><strong>Steps to attempt:</strong></p>
+              <ul>
+                <li>Login with your registration number and password</li>
+                <li>Go to the Exam section</li>
+                <li>Read instructions carefully and start</li>
+                <li>Submit before time runs out</li>
+              </ul>
+
+              <p>All the best! 🎓</p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Scholar Portal. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✉️ Exam reminder sent to ${email} — MessageId: ${info.messageId}`);
+    return { success: true };
+  } catch (error) {
+    console.error('❌ Error sending exam reminder email:', error.message);
+    throw new Error('Failed to send exam reminder email');
+  }
+};
+
 export default transporter;

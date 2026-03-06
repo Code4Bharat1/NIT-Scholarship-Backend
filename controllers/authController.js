@@ -42,6 +42,7 @@ export const register = async (req, res) => {
       emailOTP, smsOTP: whatsappOTP, otpExpires,
       state, city, subCity,
       photo: photoBase64,
+      preferredDate: req.body.preferredDate || null,  // ← "27 March 2026" / "28 March 2026" / custom text
     });
 
     try { await sendOTPEmail(email, emailOTP, fullName); }
@@ -65,7 +66,6 @@ export const register = async (req, res) => {
     res.status(500).json({ success: false, message: "Registration failed", error: error.message });
   }
 };
-
 
 // @desc    Verify Email OTP
 // @route   POST /api/auth/verify-email
@@ -222,9 +222,9 @@ export const login = async (req, res) => {
     const user = await User.findOne({ registrationNumber }).select("+password");
     if (!user) return res.status(401).json({ success: false, message: "Invalid credentials" });
 
-    if (!user.isEmailVerified || !user.isSmsVerified) {
-      return res.status(403).json({ success: false, message: "Please complete email and SMS verification first" });
-    }
+    // if (!user.isEmailVerified || !user.isSmsVerified) {
+    //   return res.status(403).json({ success: false, message: "Please complete email and SMS verification first" });
+    // }
 
     if (user.role === "user" && !user.isApproved) {
       return res.status(403).json({ success: false, message: "Your registration is pending admin approval. Please wait." });

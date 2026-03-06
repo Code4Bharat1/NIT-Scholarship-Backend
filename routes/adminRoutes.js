@@ -9,8 +9,9 @@ import {
   getDashboardStats,
   getUserById,
   publishResults,
-  setExamDates,
-  getExamDates,
+  sendLastChanceReminder,
+  sendRescheduleReminder,
+  sendExamReminder,         // ✅ add kiya
 } from '../controllers/adminController.js';
 
 // ✅ NEW: import export controllers
@@ -28,23 +29,24 @@ router.use(adminOnly);
 router.get('/dashboard/stats', getDashboardStats);
 
 // ── User management ──────────────────────────────────────────
-router.get('/users',                   getAllUsers);
-router.get('/users/pending',           getPendingUsers);
-router.get('/users/approved',          getApprovedUsers);
-router.get('/users/:id',               getUserById);
-router.post('/users/:id/approve',      approveUser);
-router.post('/users/:id/enable-exam',  enableExamAccess);
-router.post('/users/bulk-enable-exam', bulkEnableExam);
+router.get('/users',                        getAllUsers);
+router.get('/users/pending',                getPendingUsers);
+router.get('/users/approved',               getApprovedUsers);
+router.get('/users/:id',                    getUserById);
+router.post('/users/:id/approve',           approveUser);
+router.post('/users/:id/enable-exam',       enableExamAccess);
+router.post('/users/:id/send-reminder',     sendExamReminder);   // ✅ add kiya
+router.post('/users/bulk-enable-exam',      bulkEnableExam);
 
 // ── Results ──────────────────────────────────────────────────
 router.post('/results/publish', publishResults);
 
-// ── Exam dates ───────────────────────────────────────────────
-router.post('/exam-dates', setExamDates);
-router.get('/exam-dates',  getExamDates);
-
 // ── ✅ Export routes ──────────────────────────────────────────
-router.get('/export/csv', exportUsersCSV);   // → downloads .xlsx
-router.get('/export/pdf', exportUsersPDF);   // → downloads .pdf
+router.get('/export/csv', exportUsersCSV);
+router.get('/export/pdf', exportUsersPDF);
+
+// ── Reminders ────────────────────────────────────────────────
+router.post('/send-reschedule-reminder',    sendRescheduleReminder);
+router.post('/send-last-chance-reminder',   sendLastChanceReminder);
 
 export default router;

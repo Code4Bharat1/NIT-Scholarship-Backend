@@ -204,7 +204,7 @@ export const exportUsersCSV = async (req, res) => {
       { header: 'State',            key: 'state',     width: 18 },
       { header: 'Exam Date',        key: 'examDate',  width: 14 },
       { header: 'Email Verified',   key: 'emailVer',  width: 14 },
-      { header: 'SMS Verified',     key: 'smsVer',    width: 13 },
+      { header: 'WP Verified',     key: 'smsVer',    width: 13 },
       { header: 'Approved',         key: 'approved',  width: 12 },
       { header: 'Exam Attempted',   key: 'attempted', width: 15 },
     ];

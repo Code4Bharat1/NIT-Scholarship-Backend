@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const subCitySchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+   // required: true,
     trim: true
   }
 }, { _id: false }); // optional: no separate _id for each subCity
@@ -11,7 +11,7 @@ const subCitySchema = new mongoose.Schema({
 const citySchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+   // required: true,
     trim: true
   },
   subCities: [String] // array of strings
@@ -20,7 +20,7 @@ const citySchema = new mongoose.Schema({
 const locationSchema = new mongoose.Schema({
   state: {
     type: String,
-    required: true,
+ //   required: true,
     unique: true,
     trim: true
   },

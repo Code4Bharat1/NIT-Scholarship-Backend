@@ -29,8 +29,6 @@ const rawQuestions = [
 {subject:"Aptitude",question:"2^x=16",options:["2","3","4","5"],answer:"4"},
 {subject:"Aptitude",question:"Mode 2,4,4,5,6?",options:["4","5","6","2"],answer:"4"},
 {subject:"Aptitude",question:"Triangle area 10×6?",options:["30","40","50","60"],answer:"30"},
-
-/* add filler aptitude to reach 50 */
 {subject:"Aptitude",question:"25% of 200?",options:["25","50","75","100"],answer:"50"},
 {subject:"Aptitude",question:"Square root 144?",options:["10","11","12","13"],answer:"12"},
 {subject:"Aptitude",question:"5+7×2?",options:["19","24","26","17"],answer:"19"},
@@ -113,7 +111,7 @@ const rawQuestions = [
 {subject:"English",question:"I ___ homework yesterday.",options:["do","did","done","doing"],answer:"did"},
 {subject:"English",question:"Identify adjective?",options:["Tall","Run","Speak","Jump"],answer:"Tall"},
 {subject:"English",question:"This is ___ pen.",options:["my","mine","me","I"],answer:"my"},
-{subject:"English",question:"Correct sentence?",options:["She don’t like tea","She doesn’t likes","She doesn’t like tea","She not like"],answer:"She doesn’t like tea"},
+{subject:"English",question:"Correct sentence?",options:["She don\'t like tea","She doesn\'t likes","She doesn\'t like tea","She not like"],answer:"She doesn\'t like tea"},
 {subject:"English",question:"He is good ___ math.",options:["in","at","on","for"],answer:"at"},
 {subject:"English",question:"Comparative of Good?",options:["Gooder","More good","Better","Best"],answer:"Better"},
 {subject:"English",question:"Identify adverb?",options:["Slowly","Slow","Slower","Slowest"],answer:"Slowly"},
@@ -134,14 +132,317 @@ const rawQuestions = [
 {subject:"English",question:"He is good ___ English.",options:["in","at","on","with"],answer:"at"},
 {subject:"English",question:"Correct sentence?",options:["There is many","There are many","There were many","There many"],answer:"There are many"},
 {subject:"English",question:"She has a ___ house.",options:["She","Has","Small","House"],answer:"Small"},
-{subject:"English",question:"He arrived ___ airport.",options:["at","in","on","by"],answer:"at"}
+{subject:"English",question:"He arrived ___ airport.",options:["at","in","on","by"],answer:"at"},
+
+
+/* ================= NEW BATCH 2 — 150 questions ================= */
+{subject:"English",question:"___ honest man is respected by all.",options:["A", "An", "The", "No article"],answer:"An"},
+{subject:"English",question:"Choose the correct plural form: Mouse →",options:["Mouses", "Mousies", "Mice", "Mices"],answer:"Mice"},
+{subject:"English",question:"Choose the correct antonym of \'Ancient\':",options:["Old", "Historical", "Modern", "Aged"],answer:"Modern"},
+{subject:"English",question:"Identify the noun:",options:["Laugh", "Laughing", "Laughter", "Laughingly"],answer:"Laughter"},
+{subject:"English",question:"He has been living here ___ 2010.",options:["for", "since", "from", "during"],answer:"since"},
+{subject:"English",question:"By tomorrow, she ___ the project.",options:["finish", "finished", "will have finished", "is finishing"],answer:"will have finished"},
+{subject:"English",question:"Identify the adjective:",options:["Excitement", "Excite", "Excitedly", "Exciting"],answer:"Exciting"},
+{subject:"English",question:"Neither of the boys did ___ homework.",options:["their", "his", "its", "our"],answer:"his"},
+{subject:"English",question:"Choose the correct sentence about news:",options:["The news are shocking.", "The news were shocking.", "The news is shocking.", "The news am shocking."],answer:"The news is shocking."},
+{subject:"English",question:"She insisted ___ going alone.",options:["for", "on", "in", "at"],answer:"on"},
+{subject:"English",question:"Choose the correct superlative form of Little:",options:["Littlest", "More little", "Least", "Lesser"],answer:"Least"},
+{subject:"English",question:"Identify the adverb:",options:["Fierce", "Fiercely", "Fierceness", "Fiercest"],answer:"Fiercely"},
+{subject:"English",question:"___ he is rich, he is not happy.",options:["Because", "So", "Although", "And"],answer:"Although"},
+{subject:"English",question:"Choose the correct spelling (calendar):",options:["Calender", "Calander", "Callendar", "Calendar"],answer:"Calendar"},
+{subject:"English",question:"Choose the correct spelling (recommend):",options:["Reccommend", "Recommend", "Recomend", "Recommand"],answer:"Recommend"},
+{subject:"English",question:"Choose the correct spelling (supersede):",options:["Supercede", "Supersede", "Superceed", "Superseed"],answer:"Supersede"},
+{subject:"English",question:"Choose the correct spelling (millennium):",options:["Millenium", "Millenneum", "Millennium", "Milenium"],answer:"Millennium"},
+{subject:"English",question:"Choose the correct spelling (perseverance):",options:["Perseverence", "Perseverance", "Persiverance", "Perserverance"],answer:"Perseverance"},
+{subject:"English",question:"Choose the correct spelling (questionnaire):",options:["Questionnaire", "Questionnare", "Questionare", "Questionnair"],answer:"Questionnaire"},
+{subject:"English",question:"Choose the correct spelling (harassment):",options:["Harrassment", "Harassment", "Harasment", "Harrasment"],answer:"Harassment"},
+{subject:"English",question:"The plane flew ___ the clouds.",options:["under", "through", "between", "beside"],answer:"through"},
+{subject:"English",question:"Identify the noun: Celebrate / Celebrated / Celebration / Celebratory",options:["Celebrate", "Celebrated", "Celebration", "Celebratory"],answer:"Celebration"},
+{subject:"English",question:"Identify the adjective: Anger / Angrily / Angry / Angered",options:["Anger", "Angrily", "Angry", "Angered"],answer:"Angry"},
+{subject:"English",question:"Choose the correct sentence about committee:",options:["The committee have made their decision.", "The committee has made its decision.", "The committee are made their decision.", "The committee made their decisions."],answer:"The committee has made its decision."},
+{subject:"English",question:"He was punished ___ telling lies.",options:["for", "by", "with", "at"],answer:"for"},
+{subject:"English",question:"Identify the noun in \'Silence is golden.\'",options:["Is", "Golden", "Silence", "Both B and C"],answer:"Silence"},
+{subject:"English",question:"The weather today is ___ than yesterday.",options:["more cold", "coldest", "colder", "most cold"],answer:"colder"},
+{subject:"English",question:"She was absent ___ class yesterday.",options:["in", "at", "from", "by"],answer:"from"},
+{subject:"English",question:"Choose the correct sentence (gone/went):",options:["He had went to the market.", "He has went to the market.", "He had gone to the market.", "He have gone to the market."],answer:"He had gone to the market."},
+{subject:"English",question:"Identify the adjective in \'The old man walked slowly.\'",options:["Man", "Walked", "Old", "Slowly"],answer:"Old"},
+{subject:"English",question:"He apologized ___ his mistake.",options:["about", "for", "with", "on"],answer:"for"},
+{subject:"English",question:"Identify the noun: Wide / Widen / Widely / Width",options:["Wide", "Widen", "Widely", "Width"],answer:"Width"},
+{subject:"English",question:"Identify the adjective: Nation / National / Nationally / Nationalize",options:["Nation", "National", "Nationally", "Nationalize"],answer:"National"},
+{subject:"English",question:"Choose the correct sentence (known):",options:["I am knowing him since school.", "I have been knowing him since school.", "I have known him since school.", "I know him since school."],answer:"I have known him since school."},
+{subject:"English",question:"The dog jumped ___ the fence.",options:["across", "over", "through", "beside"],answer:"over"},
+{subject:"English",question:"Identify the noun in \'Cleanliness is next to godliness.\'",options:["Next", "Is", "Cleanliness", "Both A and C"],answer:"Cleanliness"},
+{subject:"English",question:"This is ___ problem I have ever faced.",options:["difficult", "more difficult", "most difficult", "the most difficult"],answer:"the most difficult"},
+{subject:"English",question:"He is married ___ a doctor.",options:["with", "by", "to", "for"],answer:"to"},
+{subject:"English",question:"Choose the correct sentence (neither):",options:["Neither of them are correct.", "Neither of them is correct.", "Neither of them were correct.", "Neither of them was been correct."],answer:"Neither of them is correct."},
+{subject:"English",question:"Identify the adjective in \'She read an interesting novel.\'",options:["She", "Read", "Interesting", "Novel"],answer:"Interesting"},
+{subject:"Aptitude",question:"All lions are animals. All animals have hearts. Conclusion: I. All lions have hearts. II. Some animals are lions.",options:["Only I", "Only II", "Both I & II", "Neither"],answer:"Both I & II"},
+{subject:"Aptitude",question:"Find the next number: 7, 12, 19, 28, 39, ?",options:["50", "52", "54", "56"],answer:"52"},
+{subject:"Aptitude",question:"A man walks 6 km West, 8 km North. How far from starting point?",options:["8 km", "10 km", "12 km", "14 km"],answer:"10 km"},
+{subject:"Aptitude",question:"9 workers complete a job in 8 days. How many days will 12 workers take?",options:["4", "5", "6", "7"],answer:"6"},
+{subject:"Aptitude",question:"No fish is a mammal. Whale is a mammal. Conclusion: I. Whale is not a fish. II. Some mammals are fish.",options:["Only I", "Only II", "Both", "Neither"],answer:"Only I"},
+{subject:"Aptitude",question:"Find next term: 0, 1, 1, 2, 3, 5, 8, 13, ?",options:["18", "20", "21", "23"],answer:"21"},
+{subject:"Aptitude",question:"Find next: 3, 6, 11, 18, 27, ?",options:["36", "38", "40", "42"],answer:"38"},
+{subject:"Aptitude",question:"In a row of 50 students, Aman is 20th from left. Position from right?",options:["29", "30", "31", "32"],answer:"31"},
+{subject:"Aptitude",question:"If WATER is coded as XCUGT, then FIRE is?",options:["GKTG", "HKTF", "GKSG", "GJSF"],answer:"GKTG"},
+{subject:"Aptitude",question:"Find next: 81, 64, 49, 36, 25, ?",options:["14", "16", "18", "20"],answer:"16"},
+{subject:"Aptitude",question:"What is the angle between clock hands at 6:30?",options:["15°", "4°", "0°", "10°"],answer:"15°"},
+{subject:"Aptitude",question:"Odd one out: 121, 144, 169, 180",options:["121", "144", "169", "180"],answer:"180"},
+{subject:"Aptitude",question:"Find missing letter: C, F, I, L, O, ?",options:["Q", "R", "S", "T"],answer:"R"},
+{subject:"Aptitude",question:"If 10×5=75 and 8×4=48, then 6×3=?",options:["18", "27", "36", "24"],answer:"27"},
+{subject:"Aptitude",question:"Some birds are parrots. All parrots can talk. Conclusion: I. Some birds can talk. II. All birds can talk.",options:["Only I", "Only II", "Both", "Neither"],answer:"Only I"},
+{subject:"Aptitude",question:"Find next: 400, 361, 324, 289, ?",options:["256", "250", "264", "244"],answer:"256"},
+{subject:"Aptitude",question:"P is mother of Q. R is brother of P. S is father of R. How is S related to Q?",options:["Father", "Uncle", "Grandfather", "Brother"],answer:"Grandfather"},
+{subject:"Aptitude",question:"Series: 2, 5, 14, 41, ?",options:["100", "120", "122", "130"],answer:"122"},
+{subject:"Aptitude",question:"20 men build a house in 30 days. How many men needed in 12 days?",options:["40", "45", "50", "55"],answer:"50"},
+{subject:"Aptitude",question:"Bird : Nest :: Fish : ?",options:["River", "Pond", "Water", "Aquarium"],answer:"Water"},
+{subject:"Aptitude",question:"Find next: 3, 5, 9, 15, 23, 33, ?",options:["43", "44", "45", "46"],answer:"45"},
+{subject:"Aptitude",question:"70% pass the exam. 42 students pass. How many are in the class?",options:["55", "60", "65", "70"],answer:"60"},
+{subject:"Aptitude",question:"12 machines produce 120 units/hr. 8 machines produce in 3 hours?",options:["180", "240", "200", "220"],answer:"240"},
+{subject:"Aptitude",question:"Find next: 1, 2, 6, 24, 120, ?",options:["240", "480", "600", "720"],answer:"720"},
+{subject:"Aptitude",question:"If 1st July is Friday, what day is 15th July?",options:["Friday", "Saturday", "Sunday", "Monday"],answer:"Friday"},
+{subject:"Aptitude",question:"Find missing letter: Y, W, T, P, K, ?",options:["E", "F", "G", "D"],answer:"E"},
+{subject:"Aptitude",question:"Find missing number: 3, 9, 27, 81, 243, ?",options:["486", "729", "324", "972"],answer:"729"},
+{subject:"Aptitude",question:"A train 400m crosses a platform 200m at 30 m/s. Time taken?",options:["15 sec", "18 sec", "20 sec", "25 sec"],answer:"20 sec"},
+{subject:"Aptitude",question:"In a group of 7 people, each shakes hands with every other once. Total handshakes?",options:["18", "19", "21", "24"],answer:"21"},
+{subject:"Aptitude",question:"Probability of drawing a king from a standard deck?",options:["1/13", "1/52", "4/52", "1/4"],answer:"1/13"},
+{subject:"Aptitude",question:"If \'ROSE\' is coded as \'TQUG\', then \'LILY\' is?",options:["NKNA", "NJNA", "MKNA", "NLNA"],answer:"NKNA"},
+{subject:"Aptitude",question:"If 6 books cost ₹90, what do 14 books cost?",options:["₹195", "₹200", "₹210", "₹215"],answer:"₹210"},
+{subject:"Aptitude",question:"Find next: 5, 11, 23, 47, 95, ?",options:["190", "191", "192", "193"],answer:"191"},
+{subject:"Aptitude",question:"If today is Saturday, what day was it 200 days ago?",options:["Wednesday", "Thursday", "Friday", "Sunday"],answer:"Wednesday"},
+{subject:"Aptitude",question:"How many vertices does a cube have?",options:["6", "8", "10", "12"],answer:"8"},
+{subject:"Aptitude",question:"Probability of NOT getting 6 when rolling a die?",options:["1/6", "1/3", "5/6", "2/3"],answer:"5/6"},
+{subject:"Aptitude",question:"Find next: 1, 5, 14, 30, 55, ?",options:["85", "91", "84", "90"],answer:"91"},
+{subject:"Aptitude",question:"Series of prime numbers: 11, 13, 17, 19, 23, 29, ?",options:["30", "31", "33", "35"],answer:"31"},
+{subject:"Aptitude",question:"If North-East becomes South, what does West become?",options:["North-East", "South-East", "North-West", "South-West"],answer:"North-East"},
+{subject:"Aptitude",question:"If 5×4=40 and 3×2=12, then 6×5=?",options:["60", "66", "55", "72"],answer:"60"},
+{subject:"Aptitude",question:"A train 360m long crosses a pole in 18 seconds. Speed?",options:["18 m/s", "20 m/s", "22 m/s", "24 m/s"],answer:"20 m/s"},
+{subject:"Aptitude",question:"Simple Interest on ₹12000 at 5% p.a. for 2 years:",options:["₹1000", "₹1100", "₹1200", "₹1500"],answer:"₹1200"},
+{subject:"Aptitude",question:"A can do work in 20 days, B in 30 days. Together in?",options:["10 days", "12 days", "14 days", "15 days"],answer:"12 days"},
+{subject:"Aptitude",question:"Probability of drawing a queen from a deck of 52 cards:",options:["1/13", "1/26", "1/52", "4/13"],answer:"1/13"},
+{subject:"Aptitude",question:"Area of circle with radius 21 cm (π=22/7):",options:["1286 cm²", "1386 cm²", "1486 cm²", "1186 cm²"],answer:"1386 cm²"},
+{subject:"Aptitude",question:"Solve: 4x − 3 = 13",options:["3", "4", "5", "6"],answer:"4"},
+{subject:"Aptitude",question:"Mean of 10, 20, 30, 40, 50:",options:["25", "30", "35", "40"],answer:"30"},
+{subject:"Aptitude",question:"Volume of cube with side 6 cm:",options:["180 cm³", "196 cm³", "216 cm³", "250 cm³"],answer:"216 cm³"},
+{subject:"Aptitude",question:"If 8 notebooks cost ₹120, what do 15 notebooks cost?",options:["₹200", "₹215", "₹225", "₹250"],answer:"₹225"},
+{subject:"Aptitude",question:"Distance covered at 90 km/hr in 4 hours?",options:["320 km", "340 km", "360 km", "380 km"],answer:"360 km"},
+{subject:"Aptitude",question:"Solve: x² − 49 = 0",options:["±7", "±49", "7 only", "49 only"],answer:"±7"},
+{subject:"Aptitude",question:"Median of 7, 3, 5, 1, 9:",options:["3", "5", "7", "4"],answer:"5"},
+{subject:"Aptitude",question:"Perimeter of square with side 15 m:",options:["45 m", "50 m", "55 m", "60 m"],answer:"60 m"},
+{subject:"Aptitude",question:"If 15% of a number is 45, find the number:",options:["250", "280", "300", "320"],answer:"300"},
+{subject:"Aptitude",question:"Total surface area of cube with side 5 cm:",options:["100 cm²", "120 cm²", "150 cm²", "180 cm²"],answer:"150 cm²"},
+{subject:"Aptitude",question:"Probability of getting a composite number on rolling a die (1–6):",options:["1/2", "1/3", "2/3", "1/6"],answer:"1/3"},
+{subject:"Aptitude",question:"GCF (HCF) of 48 and 72:",options:["12", "18", "24", "36"],answer:"24"},
+{subject:"Aptitude",question:"If 6 workers take 10 days, 15 workers take?",options:["3 days", "4 days", "5 days", "6 days"],answer:"4 days"},
+{subject:"Aptitude",question:"Slope of line 2y = 6x + 4",options:["2", "3", "6", "4"],answer:"3"},
+{subject:"Aptitude",question:"If 4^x = 256, x = ?",options:["2", "3", "4", "5"],answer:"4"},
+{subject:"Aptitude",question:"Mode of 4, 6, 8, 6, 10, 6, 12:",options:["4", "6", "8", "10"],answer:"6"},
+{subject:"Aptitude",question:"Area of triangle with base 18 cm, height 12 cm:",options:["96 cm²", "108 cm²", "120 cm²", "216 cm²"],answer:"108 cm²"},
+{subject:"Aptitude",question:"LCM of 15 and 20:",options:["40", "50", "60", "75"],answer:"60"},
+{subject:"Aptitude",question:"Find x: 7x + 14 = 49",options:["4", "5", "6", "7"],answer:"5"},
+{subject:"Aptitude",question:"If 3^x = 243, x = ?",options:["3", "4", "5", "6"],answer:"5"},
+{subject:"Aptitude",question:"Compound Interest on ₹10000 at 5% for 2 years:",options:["₹1000", "₹1025", "₹1050", "₹1075"],answer:"₹1025"},
+{subject:"Aptitude",question:"A train 250m long crosses a bridge 150m at 25 m/s. Time taken?",options:["12 sec", "14 sec", "16 sec", "18 sec"],answer:"16 sec"},
+{subject:"Aptitude",question:"40% of students are girls and boys are 180, total students?",options:["280", "300", "320", "350"],answer:"300"},
+{subject:"Aptitude",question:"Circumference of circle with radius 21 cm (π=22/7):",options:["132 cm", "138 cm", "144 cm", "154 cm"],answer:"132 cm"},
+{subject:"Aptitude",question:"Volume of cylinder r=14cm, h=5cm (π=22/7):",options:["2980 cm³", "3020 cm³", "3080 cm³", "3100 cm³"],answer:"3080 cm³"},
+{subject:"Digital Skills",question:"The ISRO\'s Mars Orbiter Mission is also known as:",options:["Chandrayaan", "Mangalyaan", "Aditya", "Gaganyaan"],answer:"Mangalyaan"},
+{subject:"Digital Skills",question:"NPCI stands for:",options:["National Payments Council of India", "National Payments Corporation of India", "National Public Credit Institution", "Net Payment Clearing Index"],answer:"National Payments Corporation of India"},
+{subject:"Digital Skills",question:"G20 summit 2023 theme was:",options:["One Earth One Family", "Vasudhaiva Kutumbakam", "Together Stronger", "Global Peace"],answer:"Vasudhaiva Kutumbakam"},
+{subject:"Digital Skills",question:"Which Indian state became the first fully digital state?",options:["Maharashtra", "Kerala", "Karnataka", "Goa"],answer:"Kerala"},
+{subject:"Digital Skills",question:"What is the full form of AI?",options:["Automated Intelligence", "Artificial Intelligence", "Advanced Interface", "Automatic Integration"],answer:"Artificial Intelligence"},
+{subject:"Digital Skills",question:"The headquarters of ISRO is located in:",options:["Mumbai", "Chennai", "Bengaluru", "Hyderabad"],answer:"Bengaluru"},
+{subject:"Digital Skills",question:"\'Digital India\' programme was launched in which year?",options:["2013", "2014", "2015", "2016"],answer:"2015"},
+{subject:"Digital Skills",question:"Which is India\'s own navigation satellite system?",options:["GPS", "GLONASS", "NavIC", "Galileo"],answer:"NavIC"},
+{subject:"Digital Skills",question:"What does OTP stand for?",options:["Online Transfer Payment", "One Time Password", "Optional Transfer Protocol", "Open Transfer Path"],answer:"One Time Password"},
+{subject:"Digital Skills",question:"Net neutrality means:",options:["Free internet for all", "Equal treatment of all internet traffic", "No internet taxation", "Unlimited data usage"],answer:"Equal treatment of all internet traffic"},
+{subject:"Digital Skills",question:"India\'s first supercomputer was named:",options:["PARAM", "SHAKTI", "AGNI", "VAJRA"],answer:"PARAM"},
+{subject:"Digital Skills",question:"The current Prime Minister of India (2025) is:",options:["Rahul Gandhi", "Narendra Modi", "Amit Shah", "Manmohan Singh"],answer:"Narendra Modi"},
+{subject:"Digital Skills",question:"Which payment method uses a physical card reader device?",options:["UPI", "NEFT", "POS (Point of Sale)", "IMPS"],answer:"POS (Point of Sale)"},
+{subject:"Digital Skills",question:"The Aditya-L1 mission is related to studying:",options:["Moon", "Mars", "Sun", "Jupiter"],answer:"Sun"},
+{subject:"Digital Skills",question:"HTTPS is more secure than HTTP because it uses:",options:["Faster servers", "SSL/TLS encryption", "More bandwidth", "Cloud storage"],answer:"SSL/TLS encryption"},
+{subject:"Digital Skills",question:"Which scheme provides free LPG connections to BPL families?",options:["Ujjwala Yojana", "Jan Dhan Yojana", "Suraksha Bima", "Ayushman Bharat"],answer:"Ujjwala Yojana"},
+{subject:"Digital Skills",question:"What is the function of CAPTCHA?",options:["Encrypt passwords", "Detect human vs bot users", "Speed up websites", "Store user data"],answer:"Detect human vs bot users"},
+{subject:"Digital Skills",question:"Jan Dhan Yojana is related to:",options:["Housing", "Education", "Financial inclusion", "Agriculture"],answer:"Financial inclusion"},
+{subject:"Digital Skills",question:"Which shortcut copies formatting in MS Word?",options:["Ctrl + F", "Ctrl + K", "Ctrl + Shift + C", "Ctrl + Alt + C"],answer:"Ctrl + Shift + C"},
+{subject:"Digital Skills",question:"National Cyber Security Policy of India was released in:",options:["2011", "2012", "2013", "2014"],answer:"2013"},
+{subject:"Computer",question:"Which of the following is both input and output device?",options:["Printer", "Monitor", "Touchscreen", "Keyboard"],answer:"Touchscreen"},
+{subject:"Computer",question:"Which storage has the fastest access speed?",options:["Hard Disk", "SSD", "CD-ROM", "Cache Memory"],answer:"Cache Memory"},
+{subject:"Computer",question:"Which file format is used for videos?",options:[".jpg", ".mp4", ".pdf", ".csv"],answer:".mp4"},
+{subject:"Computer",question:"What does Ctrl + Home do in MS Word?",options:["Save document", "Go to end", "Go to beginning", "Open file"],answer:"Go to beginning"},
+{subject:"Computer",question:"What does WWW stand for?",options:["World Wide Web", "World Wide Work", "Wide World Web", "Web World Wide"],answer:"World Wide Web"},
+{subject:"Computer",question:"Which of the following is NOT an operating system?",options:["Ubuntu", "macOS", "Android", "Oracle"],answer:"Oracle"},
+{subject:"Computer",question:"In MS Excel, which function finds the highest value?",options:["=HIGH()", "=LARGE()", "=MAX()", "=TOP()"],answer:"=MAX()"},
+{subject:"Computer",question:"Which shortcut opens Task Manager directly in Windows?",options:["Ctrl + Alt + Delete", "Ctrl + Shift + Esc", "Alt + F4", "Windows + D"],answer:"Ctrl + Shift + Esc"},
+{subject:"Computer",question:"What is the function of a modem?",options:["Store files", "Print documents", "Convert digital to analog signals", "Protect from viruses"],answer:"Convert digital to analog signals"},
+{subject:"Computer",question:"Which language is used for web page structure?",options:["Python", "Java", "HTML", "SQL"],answer:"HTML"},
+{subject:"Computer",question:"RAM stands for:",options:["Random Access Memory", "Read Access Mode", "Random Analog Memory", "Read All Memory"],answer:"Random Access Memory"},
+{subject:"Computer",question:"Which device converts digital signal to printed output?",options:["Scanner", "Printer", "Monitor", "Plotter"],answer:"Printer"},
+{subject:"Computer",question:"Which software manages databases?",options:["DBMS", "MS Word", "Adobe Reader", "PowerPoint"],answer:"DBMS"},
+{subject:"Computer",question:"What does the recycle bin store?",options:["Permanent files", "Deleted files temporarily", "System files", "Downloaded files"],answer:"Deleted files temporarily"},
+{subject:"Computer",question:"Which shortcut is used to paste text?",options:["Ctrl + C", "Ctrl + X", "Ctrl + V", "Ctrl + P"],answer:"Ctrl + V"},
+{subject:"Computer",question:"Which of the following is firmware?",options:["MS Office", "Device drivers", "BIOS", "Antivirus"],answer:"BIOS"},
+{subject:"Computer",question:"PDF stands for:",options:["Printed Document File", "Portable Document Format", "Personal Data File", "Program Display File"],answer:"Portable Document Format"},
+{subject:"Computer",question:"What is a computer worm?",options:["Antivirus software", "Self-replicating malware", "Hardware component", "Type of browser"],answer:"Self-replicating malware"},
+{subject:"Computer",question:"What does LAN stand for?",options:["Large Area Network", "Local Area Network", "Linked Access Node", "Logical Area Network"],answer:"Local Area Network"},
+{subject:"Computer",question:"Which of the following is NOT a type of printer?",options:["Laser", "Inkjet", "Dot Matrix", "Thermal Scanner"],answer:"Thermal Scanner"}
+,
+
+/* ================= NEW BATCH 3 — 150 questions ================= */
+{subject:"English",question:"___ university is a place of higher education.",options:["A", "An", "The", "No article"],answer:"A"},
+{subject:"English",question:"Choose the correct plural form: Foot →",options:["Foots", "Feet", "Feets", "Footes"],answer:"Feet"},
+{subject:"English",question:"Synonym of 'Brave':",options:["Coward", "Fearful", "Courageous", "Weak"],answer:"Courageous"},
+{subject:"English",question:"Identify the noun: Beautiful / Slowly / Wisdom / Run",options:["Beautiful", "Slowly", "Wisdom", "Run"],answer:"Wisdom"},
+{subject:"English",question:"She is sitting ___ the chair.",options:["in", "on", "at", "by"],answer:"on"},
+{subject:"English",question:"She ___ to school every day.",options:["go", "goes", "gone", "going"],answer:"goes"},
+{subject:"English",question:"Identify the adjective: Quickly / Run / Honest / Speak",options:["Quickly", "Run", "Honest", "Speak"],answer:"Honest"},
+{subject:"English",question:"___ is my best friend. (referring to a male)",options:["She", "They", "He", "It"],answer:"He"},
+{subject:"English",question:"Choose the correct sentence (were playing):",options:["They was playing cricket.", "They were playing cricket.", "They is playing cricket.", "They be playing cricket."],answer:"They were playing cricket."},
+{subject:"English",question:"She is afraid ___ heights.",options:["from", "with", "of", "by"],answer:"of"},
+{subject:"English",question:"Comparative form of Bad:",options:["Badder", "More bad", "Worse", "Worst"],answer:"Worse"},
+{subject:"English",question:"Identify the adverb: Quick / Quickly / Quicker / Quickest",options:["Quick", "Quickly", "Quicker", "Quickest"],answer:"Quickly"},
+{subject:"English",question:"She studied hard, ___ she failed.",options:["so", "because", "but", "and"],answer:"but"},
+{subject:"English",question:"Choose the correct spelling (necessary):",options:["Neccessary", "Neccesary", "Necessary", "Necessery"],answer:"Necessary"},
+{subject:"English",question:"Choose the correct spelling (occurrence):",options:["Occurance", "Occurence", "Occurrence", "Ocurrance"],answer:"Occurrence"},
+{subject:"English",question:"Choose the correct spelling (believe):",options:["Beleive", "Believe", "Belive", "Beleeve"],answer:"Believe"},
+{subject:"English",question:"Choose the correct spelling (privilege):",options:["Priviledge", "Privelege", "Privilege", "Privilige"],answer:"Privilege"},
+{subject:"English",question:"Choose the correct spelling (conscious):",options:["Concious", "Consciuos", "Conscious", "Conscieus"],answer:"Conscious"},
+{subject:"English",question:"Choose the correct spelling (independence):",options:["Independance", "Independence", "Independense", "Independince"],answer:"Independence"},
+{subject:"English",question:"Choose the correct spelling (grammar):",options:["Grammer", "Gramer", "Grammar", "Grammarr"],answer:"Grammar"},
+{subject:"English",question:"He is allergic ___ dust.",options:["from", "with", "to", "by"],answer:"to"},
+{subject:"English",question:"Identify the noun: Kindness / Kind / Kindly / Kinder",options:["Kindness", "Kind", "Kindly", "Kinder"],answer:"Kindness"},
+{subject:"English",question:"Identify the adjective: Rapidly / Rapid / Rapidity / Rapidness",options:["Rapidly", "Rapid", "Rapidity", "Rapidness"],answer:"Rapid"},
+{subject:"English",question:"Choose the correct sentence (doesn't like):",options:["He don't like coffee.", "He doesn't likes coffee.", "He doesn't like coffee.", "He not like coffee."],answer:"He doesn't like coffee."},
+{subject:"English",question:"The keys are ___ the drawer.",options:["on", "in", "at", "above"],answer:"in"},
+{subject:"English",question:"Identify noun(s) in 'Patience is a virtue.'",options:["Is", "Virtue", "Patience", "Both B and C"],answer:"Both B and C"},
+{subject:"English",question:"He gave a ___ speech.",options:["inspire", "inspiration", "inspiring", "inspiringly"],answer:"inspiring"},
+{subject:"English",question:"She is fond ___ painting.",options:["in", "at", "of", "with"],answer:"of"},
+{subject:"English",question:"Choose the correct sentence (there are):",options:["There is many people here.", "There are many people here.", "There was many people here.", "There many people here."],answer:"There are many people here."},
+{subject:"English",question:"Identify the adjective in 'She wore a beautiful saree.'",options:["She", "Wore", "Beautiful", "Saree"],answer:"Beautiful"},
+{subject:"English",question:"He congratulated her ___ her success.",options:["for", "on", "with", "at"],answer:"on"},
+{subject:"English",question:"Identify the noun: Justice / Just / Justly / Justify",options:["Justice", "Just", "Justly", "Justify"],answer:"Justice"},
+{subject:"English",question:"Identify the adjective: Sadness / Sadly / Saddened / Sad",options:["Sadness", "Sadly", "Saddened", "Sad"],answer:"Sad"},
+{subject:"English",question:"Choose the correct sentence (better than):",options:["She is more better than me.", "She is better than me.", "She is most better than me.", "She is much better more than me."],answer:"She is better than me."},
+{subject:"English",question:"He succeeded ___ hard work.",options:["with", "by", "through", "from"],answer:"through"},
+{subject:"English",question:"Identify noun(s) in 'Courage wins battles.'",options:["Wins", "Battles", "Courage", "Both B and C"],answer:"Both B and C"},
+{subject:"English",question:"She is the ___ student in the class.",options:["more intelligent", "most intelligent", "intelligent", "very intelligent"],answer:"most intelligent"},
+{subject:"English",question:"I am looking ___ my glasses.",options:["after", "for", "at", "into"],answer:"for"},
+{subject:"English",question:"Choose the correct sentence (everyone has):",options:["Everyone have their own opinion.", "Everyone has their own opinion.", "Everyone having their own opinion.", "Everyone had their own opinion always."],answer:"Everyone has their own opinion."},
+{subject:"English",question:"Identify the adjective in 'He drives a fast car.'",options:["He", "Drives", "Fast", "Car"],answer:"Fast"},
+{subject:"Aptitude",question:"All mangoes are fruits. Some fruits are sweet. Conclusions: I. Some mangoes are sweet. II. Some fruits are mangoes.",options:["Only I", "Only II", "Both I & II", "Neither"],answer:"Only II"},
+{subject:"Aptitude",question:"Find the next number: 3, 7, 15, 31, 63, ?",options:["127", "121", "119", "125"],answer:"127"},
+{subject:"Aptitude",question:"A man walks 4 km North, then 3 km East. How far from starting point?",options:["7 km", "6 km", "5 km", "4 km"],answer:"5 km"},
+{subject:"Aptitude",question:"6 workers complete work in 10 days. How many days will 4 workers take?",options:["12", "14", "15", "16"],answer:"15"},
+{subject:"Aptitude",question:"All doctors are educated. Riya is educated. Conclusions: I. Riya is a doctor. II. Some educated people are doctors.",options:["Only I", "Only II", "Both", "Neither"],answer:"Only II"},
+{subject:"Aptitude",question:"Find the missing term: 1, 8, 27, 64, 125, ?",options:["196", "216", "225", "256"],answer:"216"},
+{subject:"Aptitude",question:"Find next: 2, 5, 10, 17, 26, ?",options:["35", "36", "37", "38"],answer:"37"},
+{subject:"Aptitude",question:"Ravi is 12th from left, Priya 15th from right in a row of 40. Students between them?",options:["11", "12", "13", "14"],answer:"13"},
+{subject:"Aptitude",question:"If MANGO is coded as NBOHP, then GRAPE is?",options:["HSBQF", "HRAPF", "HSAQF", "HSBRF"],answer:"HSBQF"},
+{subject:"Aptitude",question:"Find next (Fibonacci): 2, 3, 5, 8, 13, 21, ?",options:["30", "32", "34", "35"],answer:"34"},
+{subject:"Aptitude",question:"What is the angle between clock hands at 4:20?",options:["10°", "20°", "0°", "5°"],answer:"10°"},
+{subject:"Aptitude",question:"Odd one out: 25, 36, 48, 49",options:["25", "36", "48", "49"],answer:"48"},
+{subject:"Aptitude",question:"Find missing letter: B, D, G, K, P, ?",options:["V", "U", "W", "X"],answer:"V"},
+{subject:"Aptitude",question:"If 6+4=64 and 9+3=93, then 7+5=?",options:["57", "75", "12", "35"],answer:"75"},
+{subject:"Aptitude",question:"All pens are pencils. No pencil is rubber. Conclusions: I. No pen is rubber. II. Some rubbers are pens.",options:["Only I", "Only II", "Both", "Neither"],answer:"Only I"},
+{subject:"Aptitude",question:"Find next: 100, 121, 144, 169, 196, ?",options:["216", "225", "256", "289"],answer:"225"},
+{subject:"Aptitude",question:"A is brother of B. C is mother of A. D is father of C. How is D related to B?",options:["Uncle", "Father", "Grandfather", "Brother"],answer:"Grandfather"},
+{subject:"Aptitude",question:"Series (perfect squares): 4, 9, 16, 25, 36, ?",options:["46", "47", "48", "49"],answer:"49"},
+{subject:"Aptitude",question:"15 men build a wall in 12 days. Men needed in 9 days?",options:["18", "20", "22", "24"],answer:"20"},
+{subject:"Aptitude",question:"Writer : Pen :: Painter : ?",options:["Canvas", "Gallery", "Brush", "Color"],answer:"Brush"},
+{subject:"Aptitude",question:"Find next (×2, −1 pattern): 5, 10, 9, 18, 17, 34, ?",options:["33", "35", "67", "68"],answer:"33"},
+{subject:"Aptitude",question:"40% are girls in a class. If boys are 36, total students?",options:["60", "90", "72", "80"],answer:"60"},
+{subject:"Aptitude",question:"4 cats catch 4 rats in 4 minutes. How long for 1 cat to catch 1 rat?",options:["1 min", "4 min", "16 min", "8 min"],answer:"4 min"},
+{subject:"Aptitude",question:"Find next (×2+1): 1, 3, 7, 15, 31, ?",options:["61", "62", "63", "64"],answer:"63"},
+{subject:"Aptitude",question:"If 1st March is Monday, what day is 1st April (non-leap year)?",options:["Tuesday", "Wednesday", "Thursday", "Friday"],answer:"Thursday"},
+{subject:"Aptitude",question:"Find missing letter (+4): A, E, I, M, Q, ?",options:["T", "U", "V", "W"],answer:"U"},
+{subject:"Aptitude",question:"Find missing number (×2): 6, 12, 24, 48, 96, ?",options:["192", "180", "120", "172"],answer:"192"},
+{subject:"Aptitude",question:"A train 300m long crosses a pole in 15 seconds. Speed?",options:["15 m/s", "20 m/s", "25 m/s", "18 m/s"],answer:"20 m/s"},
+{subject:"Aptitude",question:"In a family of 5 members, each shakes hands with every other once. Total handshakes?",options:["8", "10", "12", "15"],answer:"10"},
+{subject:"Aptitude",question:"Probability of getting a head in a single coin toss?",options:["1/4", "1/3", "1/2", "2/3"],answer:"1/2"},
+{subject:"Aptitude",question:"If 'BLUE' is coded as 'CMVF', then 'PINK' is?",options:["QJOL", "QKOL", "RJOL", "QJNL"],answer:"QJOL"},
+{subject:"Aptitude",question:"If 4 pencils cost ₹60, 9 pencils cost?",options:["₹120", "₹135", "₹140", "₹150"],answer:"₹135"},
+{subject:"Aptitude",question:"Find next (×2, −1): 7, 14, 13, 26, 25, 50, ?",options:["49", "51", "100", "52"],answer:"49"},
+{subject:"Aptitude",question:"If today is Wednesday, what day after 50 days?",options:["Monday", "Tuesday", "Wednesday", "Thursday"],answer:"Monday"},
+{subject:"Aptitude",question:"A cube has how many faces?",options:["4", "6", "8", "12"],answer:"6"},
+{subject:"Aptitude",question:"Probability of getting a prime number on a die roll?",options:["1/2", "1/3", "2/3", "1/6"],answer:"1/2"},
+{subject:"Aptitude",question:"Find next (×3): 2, 6, 18, 54, 162, ?",options:["324", "486", "540", "162"],answer:"486"},
+{subject:"Aptitude",question:"Series (n²): 1, 4, 9, 16, 25, 36, ?",options:["45", "47", "49", "48"],answer:"49"},
+{subject:"Aptitude",question:"If South becomes East, what does North become?",options:["South", "West", "North-East", "South-West"],answer:"West"},
+{subject:"Aptitude",question:"If 3+2=10 and 4+3=24, then 5+4=?",options:["35", "40", "45", "50"],answer:"45"},
+{subject:"Aptitude",question:"A train 240m long crosses a pole in 16 seconds. Speed?",options:["12 m/s", "15 m/s", "18 m/s", "20 m/s"],answer:"15 m/s"},
+{subject:"Aptitude",question:"Simple Interest on ₹8000 at 6% p.a. for 4 years:",options:["₹1800", "₹1920", "₹2000", "₹2400"],answer:"₹1920"},
+{subject:"Aptitude",question:"A completes work in 10 days, B in 15 days. Together in?",options:["5 days", "6 days", "7 days", "8 days"],answer:"6 days"},
+{subject:"Aptitude",question:"Probability of picking a black card from a deck of 52:",options:["1/4", "1/13", "1/2", "3/4"],answer:"1/2"},
+{subject:"Aptitude",question:"Area of circle with radius 14 cm (π=22/7):",options:["516 cm²", "616 cm²", "716 cm²", "416 cm²"],answer:"616 cm²"},
+{subject:"Aptitude",question:"Solve: 3x + 7 = 22",options:["4", "5", "6", "7"],answer:"5"},
+{subject:"Aptitude",question:"Mean of 5, 10, 15, 20:",options:["10", "12.5", "15", "11"],answer:"12.5"},
+{subject:"Aptitude",question:"Volume of cube with side 4 cm:",options:["48 cm³", "56 cm³", "64 cm³", "72 cm³"],answer:"64 cm³"},
+{subject:"Aptitude",question:"If 5 pens cost ₹75, what do 12 pens cost?",options:["₹160", "₹170", "₹180", "₹200"],answer:"₹180"},
+{subject:"Aptitude",question:"Distance covered at 80 km/hr in 3 hours?",options:["200 km", "220 km", "240 km", "260 km"],answer:"240 km"},
+{subject:"Aptitude",question:"Solve: x² − 25 = 0",options:["±5", "±25", "5 only", "25 only"],answer:"±5"},
+{subject:"Aptitude",question:"Median of 4, 6, 8, 10, 12:",options:["6", "8", "10", "7"],answer:"8"},
+{subject:"Aptitude",question:"Perimeter of rectangle 12m × 8m:",options:["36 m", "40 m", "44 m", "48 m"],answer:"40 m"},
+{subject:"Aptitude",question:"If 25% of number is 75, find the number:",options:["200", "250", "300", "350"],answer:"300"},
+{subject:"Aptitude",question:"Surface area of sphere radius 3.5 cm (π=22/7):",options:["154 cm²", "144 cm²", "136 cm²", "168 cm²"],answer:"154 cm²"},
+{subject:"Aptitude",question:"Probability of getting an odd number on a die:",options:["1/2", "1/3", "2/3", "1/6"],answer:"1/2"},
+{subject:"Aptitude",question:"HCF of 24 and 36:",options:["6", "8", "12", "18"],answer:"12"},
+{subject:"Aptitude",question:"If 8 workers take 6 days, 4 workers take?",options:["10 days", "12 days", "14 days", "16 days"],answer:"12 days"},
+{subject:"Aptitude",question:"Slope of line y = −2x + 9",options:["9", "2", "−2", "1"],answer:"−2"},
+{subject:"Aptitude",question:"If 3^x = 81, x = ?",options:["2", "3", "4", "5"],answer:"4"},
+{subject:"Aptitude",question:"Mode of 3, 5, 5, 7, 9, 9, 9:",options:["5", "7", "9", "3"],answer:"9"},
+{subject:"Aptitude",question:"Area of triangle base 14 cm, height 10 cm:",options:["60 cm²", "70 cm²", "80 cm²", "140 cm²"],answer:"70 cm²"},
+{subject:"Aptitude",question:"LCM of 8 and 14:",options:["28", "42", "56", "72"],answer:"56"},
+{subject:"Aptitude",question:"Compound Interest on ₹5000 at 10% for 2 years:",options:["₹1000", "₹1050", "₹1100", "₹1150"],answer:"₹1050"},
+{subject:"Aptitude",question:"If 2^x = 64, x = ?",options:["4", "5", "6", "7"],answer:"6"},
+{subject:"Aptitude",question:"A train 500m crosses a bridge 300m at 40 m/s. Time taken?",options:["15 sec", "18 sec", "20 sec", "25 sec"],answer:"20 sec"},
+{subject:"Aptitude",question:"Find x: 5x − 3 = 27",options:["4", "5", "6", "7"],answer:"6"},
+{subject:"Aptitude",question:"30% of students are boys and girls are 210, total students?",options:["250", "280", "300", "350"],answer:"300"},
+{subject:"Aptitude",question:"Circumference of circle with radius 7 cm (π=22/7):",options:["44 cm", "48 cm", "36 cm", "52 cm"],answer:"44 cm"},
+{subject:"Aptitude",question:"Volume of cylinder r=7cm, h=10cm (π=22/7):",options:["1340 cm³", "1540 cm³", "1640 cm³", "1240 cm³"],answer:"1540 cm³"},
+{subject:"Digital Skills",question:"Which organization developed ChatGPT?",options:["Google", "Meta", "OpenAI", "Microsoft"],answer:"OpenAI"},
+{subject:"Digital Skills",question:"UPI stands for:",options:["United Payment Interface", "Unified Payment Initiative", "Unified Payments Interface", "Universal Payment Index"],answer:"Unified Payments Interface"},
+{subject:"Digital Skills",question:"Which year did India launch its 5G services?",options:["2020", "2021", "2022", "2023"],answer:"2022"},
+{subject:"Digital Skills",question:"Aadhaar card is issued by:",options:["RBI", "UIDAI", "SEBI", "NPCI"],answer:"UIDAI"},
+{subject:"Digital Skills",question:"Which technology enables contactless payments?",options:["Bluetooth", "NFC", "WiFi", "GPS"],answer:"NFC"},
+{subject:"Digital Skills",question:"The founder of Microsoft is:",options:["Steve Jobs", "Mark Zuckerberg", "Bill Gates", "Elon Musk"],answer:"Bill Gates"},
+{subject:"Digital Skills",question:"PM-WANI scheme is related to:",options:["Digital Banking", "Public WiFi Hotspots", "Online Education", "Cyber Security"],answer:"Public WiFi Hotspots"},
+{subject:"Digital Skills",question:"'Ransomware' is a type of:",options:["Hardware", "Antivirus", "Malware", "Browser"],answer:"Malware"},
+{subject:"Digital Skills",question:"Which scheme provides farmers with digital financial support?",options:["PMGSY", "PM-Kisan", "PMGDISHA", "Skill India"],answer:"PM-Kisan"},
+{subject:"Digital Skills",question:"IoT stands for:",options:["Internet of Technology", "Integrated Online Tools", "Internet of Things", "Interface of Technology"],answer:"Internet of Things"},
+{subject:"Digital Skills",question:"India's first indigenously developed 5G test bed was developed by?",options:["IIT Bombay", "IIT Madras", "IIT Delhi", "IISc Bangalore"],answer:"IIT Madras"},
+{subject:"Digital Skills",question:"Which country is NOT a permanent member of the UN Security Council?",options:["France", "Russia", "India", "China"],answer:"India"},
+{subject:"Digital Skills",question:"Google Pay, PhonePe, and Paytm use which payment system?",options:["SWIFT", "UPI", "NEFT", "IMPS"],answer:"UPI"},
+{subject:"Digital Skills",question:"Chandrayaan-3 successfully landed on the Moon in which year?",options:["2021", "2022", "2023", "2024"],answer:"2023"},
+{subject:"Digital Skills",question:"Multi-factor authentication is used to improve:",options:["Speed", "Security", "Storage", "Design"],answer:"Security"},
+{subject:"Digital Skills",question:"The term 'Dark Web' refers to:",options:["Slow internet", "Hidden parts of the internet", "Night mode of websites", "Black background websites"],answer:"Hidden parts of the internet"},
+{subject:"Digital Skills",question:"e-RUPI is a digital payment solution launched by:",options:["SBI", "SEBI", "NPCI", "RBI"],answer:"NPCI"},
+{subject:"Digital Skills",question:"SSL in websites stands for:",options:["Secure Socket Layer", "Standard Security Link", "Safe Server Login", "Secure Software Layer"],answer:"Secure Socket Layer"},
+{subject:"Digital Skills",question:"India Digital Literacy Mission is called?",options:["Skill India", "PMGDISHA", "Make in India", "Startup India"],answer:"PMGDISHA"},
+{subject:"Digital Skills",question:"QR code stands for:",options:["Quick Response", "Query Register", "Queue Read", "Quick Register"],answer:"Quick Response"},
+{subject:"Computer",question:"Which of the following is an output device?",options:["Keyboard", "Mouse", "Printer", "Scanner"],answer:"Printer"},
+{subject:"Computer",question:"What type of memory is non-volatile?",options:["RAM", "Cache", "ROM", "Register"],answer:"ROM"},
+{subject:"Computer",question:"Which file extension is used for audio files?",options:[".docx", ".xlsx", ".mp3", ".pptx"],answer:".mp3"},
+{subject:"Computer",question:"Which shortcut is used to undo an action?",options:["Ctrl + Y", "Ctrl + Z", "Ctrl + U", "Ctrl + X"],answer:"Ctrl + Z"},
+{subject:"Computer",question:"What does FTP stand for?",options:["File Transfer Protocol", "Fast Transfer Program", "File Transport Path", "Fast Text Protocol"],answer:"File Transfer Protocol"},
+{subject:"Computer",question:"Which of the following is an example of open-source software?",options:["MS Windows", "Adobe Photoshop", "Linux", "MS Office"],answer:"Linux"},
+{subject:"Computer",question:"In MS Excel, which formula gives the sum of cells A1 to A5?",options:["=ADD(A1:A5)", "=TOTAL(A1:A5)", "=SUM(A1:A5)", "=COUNT(A1:A5)"],answer:"=SUM(A1:A5)"},
+{subject:"Computer",question:"What does pressing F5 do in most browsers?",options:["Opens bookmarks", "Refreshes the page", "Opens downloads", "Opens settings"],answer:"Refreshes the page"},
+{subject:"Computer",question:"What is the brain of a computer?",options:["RAM", "Hard Drive", "CPU", "Motherboard"],answer:"CPU"},
+{subject:"Computer",question:"Which of the following is NOT a programming language?",options:["Python", "Java", "HTML", "HTTP"],answer:"HTTP"},
+{subject:"Computer",question:"What does GUI stand for?",options:["General User Input", "Graphical User Interface", "Global Utility Interface", "Grouped User Input"],answer:"Graphical User Interface"},
+{subject:"Computer",question:"What does CMOS stand for?",options:["Complementary Metal Oxide Semiconductor", "Computer Memory Operating System", "Central Management Operating System", "Common Memory Output System"],answer:"Complementary Metal Oxide Semiconductor"},
+{subject:"Computer",question:"Which software is used for database management?",options:["MS Word", "MS PowerPoint", "MS Access", "MS Excel"],answer:"MS Access"},
+{subject:"Computer",question:"An antivirus is used for:",options:["Speeding up the computer", "Detecting and removing malware", "Increasing storage", "Improving graphics"],answer:"Detecting and removing malware"},
+{subject:"Computer",question:"Which shortcut is used to copy selected text?",options:["Ctrl + X", "Ctrl + V", "Ctrl + C", "Ctrl + P"],answer:"Ctrl + C"},
+{subject:"Computer",question:"Which of the following is application software?",options:["BIOS", "Windows 11", "MS Word", "Device Driver"],answer:"MS Word"},
+{subject:"Computer",question:"In email, BCC stands for:",options:["Basic Carbon Copy", "Blind Carbon Copy", "Broad Copy Contact", "Binary Code Copy"],answer:"Blind Carbon Copy"},
+{subject:"Computer",question:"Spyware is a type of:",options:["Hardware", "Antivirus", "Malware that secretly monitors users", "Network protocol"],answer:"Malware that secretly monitors users"},
+{subject:"Computer",question:"What does DNS stand for?",options:["Digital Network Service", "Dynamic Network System", "Domain Name System", "Data Node Server"],answer:"Domain Name System"},
+{subject:"Computer",question:"Which of the following is a web browser?",options:["Windows Explorer (File Manager)", "MS Word", "Mozilla Firefox", "Adobe Reader"],answer:"Mozilla Firefox"}
 ];
 
 
-
 // ─── Convert raw JSON format → DB schema format ───────────────────
-// JSON has: answer as text string (e.g. "_variable")
-// DB needs: correctAnswer as key  (e.g. "B")
 const convertQuestion = (raw, questionNumber) => {
   const keys = ['A', 'B', 'C', 'D'];
 
@@ -150,7 +451,6 @@ const convertQuestion = (raw, questionNumber) => {
     optionText: text
   }));
 
-  // Find which key (A/B/C/D) matches the answer text
   const answerIndex = raw.options.findIndex(opt => opt === raw.answer);
   const correctAnswer = keys[answerIndex];
 
@@ -176,35 +476,43 @@ const seedQuestions = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ MongoDB Connected');
 
-    // Clear existing questions
-    await Question.deleteMany({});
-    console.log('🗑️  Old questions cleared');
+    // Get existing question texts to avoid duplicates
+    const existing = await Question.find({}, { questionText: 1 }).lean();
+    const existingTexts = new Set(existing.map(q => q.questionText.trim().toLowerCase()));
+    console.log(`📦 Existing questions in DB: ${existing.length}`);
 
-    // Combine real + extra questions
-    const allRaw = [...rawQuestions];
+    // Filter out questions already in DB
+    const newRaw = rawQuestions.filter(
+      raw => !existingTexts.has(raw.question.trim().toLowerCase())
+    );
+    console.log(`🆕 New questions to add: ${newRaw.length}`);
 
-    // Build 120 questions (repeat cycle if less than 120)
-    const formatted = [];
-    for (let i = 0; i < 120; i++) {
-      const raw = allRaw[i % allRaw.length];
-      formatted.push(convertQuestion(raw, i + 1));
+    if (newRaw.length === 0) {
+      console.log('✅ No new questions to add. DB is already up to date!');
+      process.exit(0);
     }
+
+    // Assign question numbers starting after last existing
+    const lastQ = await Question.findOne().sort({ questionNumber: -1 }).lean();
+    let startNum = lastQ ? lastQ.questionNumber + 1 : 1;
+
+    const formatted = newRaw.map((raw, idx) => convertQuestion(raw, startNum + idx));
 
     await Question.insertMany(formatted);
 
-    // Summary by subject
     const subjects = {};
     formatted.forEach(q => {
       subjects[q.subject] = (subjects[q.subject] || 0) + 1;
     });
 
-    console.log('\n✅ 120 Questions seeded successfully!\n');
-    console.log('📊 Questions per subject:');
+    const totalNow = existing.length + formatted.length;
+    console.log(`\n✅ ${formatted.length} new questions added! Total in DB: ${totalNow}\n`);
+    console.log('📊 Newly added per subject:');
     Object.entries(subjects).forEach(([subj, count]) => {
       console.log(`   ${subj}: ${count}`);
     });
 
-    console.log('\n🚀 Run your server and try GET /api/exam/questions again!');
+    console.log('\n🚀 Done! Your DB now has all questions preserved + new ones added.');
     process.exit(0);
   } catch (error) {
     console.error('❌ Error seeding questions:', error.message);

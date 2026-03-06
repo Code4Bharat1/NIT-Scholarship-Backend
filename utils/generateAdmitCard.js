@@ -200,9 +200,9 @@ export async function generateAdmitCard(user) {
   //  EXAM INFO TABLE
   // ══════════════════════════════════════════════════════════════
   const examFields = [
-    ['Exam Name',    'Nexcore Scholarship Examination'],
+    ['Exam Name',    'NIT Scholarship Examination'],
     ['Total Marks',  '120 (1 mark per question)'],
-    ['Duration',     '2 Hours'],
+    ['Duration',     '1 Hours'],
     ['Mode',         'Online (Computer Based Test)'],
   ];
 
@@ -234,7 +234,7 @@ export async function generateAdmitCard(user) {
   const notes = [
     '* Keep this admit card safe for future reference.',
     '* Login credentials will be emailed after admin approval.',
-    '* For queries, contact: director@nexcoreinstitute.org  |  +91 959 440 2822',
+    '* For queries, contact: director@nexcoreinstitute.org  |  +91 9892398976',
   ];
   const NOTE_H = notes.length * 14 + 20;
 
