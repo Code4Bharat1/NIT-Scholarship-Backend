@@ -31,7 +31,9 @@ app.use(helmet());
 app.use(cors({
   origin: [
     "https://scholarship.nexcoreinstitute.org",
-    "https://www.scholarship.nexcoreinstitute.org"
+    "https://www.scholarship.nexcoreinstitute.org",
+    "http://localhost:3000",
+    "http://localhost:3001"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
