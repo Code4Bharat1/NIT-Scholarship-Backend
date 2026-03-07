@@ -102,49 +102,83 @@ export const verifyEmail = async (req, res) => {
 export const verifySMS = async (req, res) => {
   try {
     const { phone, otp } = req.body;
-    if (!phone || !otp) return res.status(400).json({ success: false, message: "Please provide phone and OTP" });
+
+    if (!phone || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide phone and OTP"
+      });
+    }
 
     const user = await User.findOne({
-      phone, smsOTP: otp, otpExpires: { $gt: Date.now() },
-    }).select("+smsOTP +otpExpires +photo");
+      phone,
+      smsOTP: otp,
+      otpExpires: { $gt: Date.now() },
+    }).select("+smsOTP +otpExpires +photo +password");
 
-    if (!user) return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP"
+      });
+    }
 
-    // ✅ GUARD: already verified → don't send duplicate admit card
+    // Guard if already verified
     if (user.isSmsVerified) {
       return res.status(200).json({
         success: true,
         message: "Phone already verified.",
         data: {
-          emailVerified:      user.isEmailVerified,
-          smsVerified:        true,
+          emailVerified: user.isEmailVerified,
+          smsVerified: true,
           registrationNumber: user.registrationNumber,
         },
       });
     }
 
-    user.isSmsVerified  = true;
-    user.smsOTP         = undefined;
-    user.otpExpires     = undefined;
+    // ✅ Verify SMS
+    user.isSmsVerified = true;
+    user.smsOTP = undefined;
+    user.otpExpires = undefined;
+
+    // ✅ Auto approve
+    user.isApproved = true;
+    user.approvedAt = new Date();
+
     await user.save();
 
-    // ✅ Send admit card PDF email only ONCE (non-blocking)
+    // ✅ Send Admit Card Email
     sendAdmitCardEmail(user).catch(err =>
-      console.error("[AdmitCard] Failed to send admit card email:", err)
+      console.error("[AdmitCard] Email failed:", err)
     );
 
-    res.status(200).json({
+    // ✅ Send login credentials email
+    sendCredentialsEmail(
+      user.email,
+      user.fullName,
+      user.registrationNumber
+    ).catch(err =>
+      console.error("[Credentials] Email failed:", err)
+    );
+
+    return res.status(200).json({
       success: true,
-      message: "Phone verified successfully! Your registration is complete. Please wait for admin approval.",
+      message: "Phone verified successfully! Registration completed.",
       data: {
-        emailVerified:      user.isEmailVerified,
-        smsVerified:        true,
+        emailVerified: user.isEmailVerified,
+        smsVerified: true,
         registrationNumber: user.registrationNumber,
       },
     });
+
   } catch (error) {
     console.error("SMS verification error:", error);
-    res.status(500).json({ success: false, message: "SMS verification failed", error: error.message });
+
+    return res.status(500).json({
+      success: false,
+      message: "SMS verification failed",
+      error: error.message
+    });
   }
 };
 
