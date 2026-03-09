@@ -395,7 +395,7 @@ import { generateAdmitCard } from "../utils/generateAdmitCard.js"; // ✅ NEW
 export const register = async (req, res) => {
   try {
 
-    const { fullName, email, phone, institution, state, city, subCity } = req.body;
+    const { fullName, email, phone, institution, state, city, subCity, preferredDate, } = req.body;
 
     if (!fullName || !email || !phone) {
       return res.status(400).json({
@@ -437,6 +437,7 @@ export const register = async (req, res) => {
       institution,
       password: tempPassword,
       tempPassword,
+      preferredDate,
       emailOTP,
       otpExpires,
       state,
@@ -669,14 +670,14 @@ async function sendAdmitCardEmail(user) {
   // Generate the admit card PDF buffer
   const pdfBuffer = await generateAdmitCard({
     registrationNumber: user.registrationNumber,
-    fullName:           user.fullName,
-    email:              user.email,
-    phone:              user.phone,
-    institution:        user.institution,
-    state:              user.state,
-    city:               user.city,
-    subCity:            user.subCity,
-    photo:              user.photo,
+    fullName: user.fullName,
+    email: user.email,
+    phone: user.phone,
+    institution: user.institution,
+    state: user.state,
+    city: user.city,
+    subCity: user.subCity,
+    photo: user.photo,
   });
 
   // Send via your existing email service
@@ -696,17 +697,17 @@ export const resendOTP = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-    const newOTP     = Math.floor(100000 + Math.random() * 900000).toString();
+    const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     if (type === "email") {
-      user.emailOTP    = newOTP;
-      user.otpExpires  = otpExpires;
+      user.emailOTP = newOTP;
+      user.otpExpires = otpExpires;
       await user.save();
       await sendOTPEmail(user.email, newOTP, user.fullName);
     } else if (type === "sms") {
-      user.smsOTP      = newOTP;
-      user.otpExpires  = otpExpires;
+      user.smsOTP = newOTP;
+      user.otpExpires = otpExpires;
       await user.save();
       if (process.env.NODE_ENV === "production") {
         await sendOTPSMS(user.phone, newOTP, user.fullName);

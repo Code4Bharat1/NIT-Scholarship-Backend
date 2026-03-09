@@ -31,19 +31,16 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.0",
-<<<<<<< HEAD
     "multer": "^2.1.1",
     "nodemailer": "^8.0.1",
     "nodemon": "^3.1.11",
     "pdf-lib": "^1.17.1",
-=======
     "multer": "^2.0.2",
     "nodemailer": "^8.0.1",
     "nodemon": "^3.1.11",
     "pdf-lib": "^1.17.1",
     "pdfkit": "^0.17.2",
     "pdfkit-table": "^0.1.99",
->>>>>>> 25a086dc3a43ea37f806df561d156c1b5a04fbec
     "twilio": "^5.12.1"
   }
 }

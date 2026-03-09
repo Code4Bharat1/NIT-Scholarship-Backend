@@ -266,7 +266,9 @@ photo: {
   type: String,
   default: null
 },
-
+preferredDate: {
+  type: String
+},
   
   // Exam Status
   canTakeExam: {

@@ -59,16 +59,20 @@ export const getPendingUsers = async (req, res) => {
 // @access  Private/Admin
 export const getApprovedUsers = async (req, res) => {
   try {
+
     const approvedUsers = await User.find({
       role: 'user',
       isApproved: true
-    }).select('-password').sort({ approvedAt: -1 });
+    })
+    .select('-password')
+    .sort({ approvedAt: -1 });
 
     res.status(200).json({
       success: true,
       count: approvedUsers.length,
       data: { users: approvedUsers }
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
