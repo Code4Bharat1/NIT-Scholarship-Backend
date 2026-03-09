@@ -9,90 +9,247 @@ import { generateAdmitCard } from "../utils/generateAdmitCard.js"; // ✅ NEW
 // @desc    Register new user
 // @route   POST /api/auth/register
 // @access  Public
+// export const register = async (req, res) => {
+//   try {
+//     const { fullName, email, phone, institution, state, city, subCity } = req.body;
+
+//     if (!fullName || !email || !phone) {
+//       return res.status(400).json({ success: false, message: "Please provide all required fields" });
+//     }
+
+//     if (!/^[0-9]{10}$/.test(phone)) {
+//       return res.status(400).json({ success: false, message: "Phone number must be exactly 10 digits" });
+//     }
+
+//     const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+//     if (existingUser) {
+//       return res.status(400).json({ success: false, message: "User with this email or phone already exists" });
+//     }
+
+//     const tempPassword  = generatePassword();
+//     const emailOTP      = Math.floor(100000 + Math.random() * 900000).toString();
+//     const whatsappOTP   = Math.floor(100000 + Math.random() * 900000).toString();
+//     const otpExpires    = new Date(Date.now() + 10 * 60 * 1000);
+
+//     let photoBase64 = null;
+//     if (req.file) {
+//       photoBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+//     }
+
+//     const user = await User.create({
+//       fullName, email, phone, institution,
+//       password: tempPassword,
+//       emailOTP, smsOTP: whatsappOTP, otpExpires,
+//       state, city, subCity,
+//       photo: photoBase64,
+//     });
+
+//     try { await sendOTPEmail(email, emailOTP, fullName); }
+//     catch (e) { console.error("Error sending email OTP:", e); }
+
+//     try { await sendWhatsAppOTP(phone, whatsappOTP, fullName); }
+//     catch (e) { console.error("Error sending WhatsApp OTP:", e); }
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Registration successful! Please verify your email and WhatsApp number.",
+//       data: {
+//         userId: user._id,
+//         registrationNumber: user.registrationNumber,
+//         email: user.email,
+//         phone: user.phone,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Registration error:", error);
+//     res.status(500).json({ success: false, message: "Registration failed", error: error.message });
+//   }
+// };
+
+
 export const register = async (req, res) => {
   try {
+
     const { fullName, email, phone, institution, state, city, subCity } = req.body;
 
     if (!fullName || !email || !phone) {
-      return res.status(400).json({ success: false, message: "Please provide all required fields" });
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields"
+      });
     }
 
     if (!/^[0-9]{10}$/.test(phone)) {
-      return res.status(400).json({ success: false, message: "Phone number must be exactly 10 digits" });
+      return res.status(400).json({
+        success: false,
+        message: "Phone number must be exactly 10 digits"
+      });
     }
 
     const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+
     if (existingUser) {
-      return res.status(400).json({ success: false, message: "User with this email or phone already exists" });
+      return res.status(400).json({
+        success: false,
+        message: "User with this email or phone already exists"
+      });
     }
 
-    const tempPassword  = generatePassword();
-    const emailOTP      = Math.floor(100000 + Math.random() * 900000).toString();
-    const whatsappOTP   = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires    = new Date(Date.now() + 10 * 60 * 1000);
+    const tempPassword = generatePassword();
+    const emailOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     let photoBase64 = null;
+
     if (req.file) {
       photoBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
     }
 
     const user = await User.create({
-      fullName, email, phone, institution,
+      fullName,
+      email,
+      phone,
+      institution,
       password: tempPassword,
-      emailOTP, smsOTP: whatsappOTP, otpExpires,
-      state, city, subCity,
-      photo: photoBase64,
-      preferredDate: req.body.preferredDate || null,  // ← "27 March 2026" / "28 March 2026" / custom text
+      tempPassword,
+      emailOTP,
+      otpExpires,
+      state,
+      city,
+      subCity,
+      photo: photoBase64
     });
 
-    try { await sendOTPEmail(email, emailOTP, fullName); }
-    catch (e) { console.error("Error sending email OTP:", e); }
-
-    try { await sendWhatsAppOTP(phone, whatsappOTP, fullName); }
-    catch (e) { console.error("Error sending WhatsApp OTP:", e); }
+    try {
+      await sendOTPEmail(email, emailOTP, fullName);
+    } catch (e) {
+      console.error("Error sending email OTP:", e);
+    }
 
     res.status(201).json({
       success: true,
-      message: "Registration successful! Please verify your email and WhatsApp number.",
+      message: "Registration successful! Please verify your email.",
       data: {
         userId: user._id,
         registrationNumber: user.registrationNumber,
         email: user.email,
-        phone: user.phone,
-      },
+        phone: user.phone
+      }
     });
+
   } catch (error) {
+
     console.error("Registration error:", error);
-    res.status(500).json({ success: false, message: "Registration failed", error: error.message });
+
+    res.status(500).json({
+      success: false,
+      message: "Registration failed",
+      error: error.message
+    });
   }
 };
+
+
 
 // @desc    Verify Email OTP
 // @route   POST /api/auth/verify-email
 // @access  Public
+// export const verifyEmail = async (req, res) => {
+//   try {
+//     const { email, otp } = req.body;
+//     if (!email || !otp) return res.status(400).json({ success: false, message: "Please provide email and OTP" });
+
+//     const user = await User.findOne({
+//       email, emailOTP: otp, otpExpires: { $gt: Date.now() },
+//     }).select("+emailOTP +otpExpires");
+
+//     if (!user) return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+
+//     user.isEmailVerified = true;
+//     user.emailOTP        = undefined;
+//     await user.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Email verified successfully! Please verify your phone number.",
+//       data: { emailVerified: true, smsVerified: user.isSmsVerified },
+//     });
+//   } catch (error) {
+//     console.error("Email verification error:", error);
+//     res.status(500).json({ success: false, message: "Email verification failed", error: error.message });
+//   }
+// };
+
+
 export const verifyEmail = async (req, res) => {
   try {
+
     const { email, otp } = req.body;
-    if (!email || !otp) return res.status(400).json({ success: false, message: "Please provide email and OTP" });
+
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide email and OTP"
+      });
+    }
 
     const user = await User.findOne({
-      email, emailOTP: otp, otpExpires: { $gt: Date.now() },
-    }).select("+emailOTP +otpExpires");
+      email,
+      emailOTP: otp,
+      otpExpires: { $gt: Date.now() }
+    }).select("+emailOTP +otpExpires +photo +password +tempPassword");
 
-    if (!user) return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP"
+      });
+    }
 
+    // Email verify
     user.isEmailVerified = true;
-    user.emailOTP        = undefined;
+    user.emailOTP = undefined;
+    user.otpExpires = undefined;
+
+    // Auto approve user
+    user.isApproved = true;
+    user.approvedAt = new Date();
+
     await user.save();
+
+    // ✅ Send Admit Card Email
+    sendAdmitCardEmail(user).catch(err =>
+      console.error("[AdmitCard] Email failed:", err)
+    );
+
+    // ✅ Send Login Credentials Email
+    sendCredentialsEmail(
+      user.email,
+      user.fullName,
+      user.registrationNumber,
+      user.tempPassword
+    ).catch(err =>
+      console.error("[Credentials] Email failed:", err)
+    );
 
     res.status(200).json({
       success: true,
-      message: "Email verified successfully! Please verify your phone number.",
-      data: { emailVerified: true, smsVerified: user.isSmsVerified },
+      message: "Email verified successfully! Registration completed.",
+      data: {
+        emailVerified: true,
+        registrationNumber: user.registrationNumber
+      }
     });
+
   } catch (error) {
+
     console.error("Email verification error:", error);
-    res.status(500).json({ success: false, message: "Email verification failed", error: error.message });
+
+    res.status(500).json({
+      success: false,
+      message: "Email verification failed",
+      error: error.message
+    });
   }
 };
 
@@ -102,49 +259,83 @@ export const verifyEmail = async (req, res) => {
 export const verifySMS = async (req, res) => {
   try {
     const { phone, otp } = req.body;
-    if (!phone || !otp) return res.status(400).json({ success: false, message: "Please provide phone and OTP" });
+
+    if (!phone || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide phone and OTP"
+      });
+    }
 
     const user = await User.findOne({
-      phone, smsOTP: otp, otpExpires: { $gt: Date.now() },
-    }).select("+smsOTP +otpExpires +photo");
+      phone,
+      smsOTP: otp,
+      otpExpires: { $gt: Date.now() },
+    }).select("+smsOTP +otpExpires +photo +password");
 
-    if (!user) return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP"
+      });
+    }
 
-    // ✅ GUARD: already verified → don't send duplicate admit card
+    // Guard if already verified
     if (user.isSmsVerified) {
       return res.status(200).json({
         success: true,
         message: "Phone already verified.",
         data: {
-          emailVerified:      user.isEmailVerified,
-          smsVerified:        true,
+          emailVerified: user.isEmailVerified,
+          smsVerified: true,
           registrationNumber: user.registrationNumber,
         },
       });
     }
 
-    user.isSmsVerified  = true;
-    user.smsOTP         = undefined;
-    user.otpExpires     = undefined;
+    // ✅ Verify SMS
+    user.isSmsVerified = true;
+    user.smsOTP = undefined;
+    user.otpExpires = undefined;
+
+    // ✅ Auto approve
+    user.isApproved = true;
+    user.approvedAt = new Date();
+
     await user.save();
 
-    // ✅ Send admit card PDF email only ONCE (non-blocking)
+    // ✅ Send Admit Card Email
     sendAdmitCardEmail(user).catch(err =>
-      console.error("[AdmitCard] Failed to send admit card email:", err)
+      console.error("[AdmitCard] Email failed:", err)
     );
 
-    res.status(200).json({
+    // ✅ Send login credentials email
+    sendCredentialsEmail(
+      user.email,
+      user.fullName,
+      user.registrationNumber
+    ).catch(err =>
+      console.error("[Credentials] Email failed:", err)
+    );
+
+    return res.status(200).json({
       success: true,
-      message: "Phone verified successfully! Your registration is complete. Please wait for admin approval.",
+      message: "Phone verified successfully! Registration completed.",
       data: {
-        emailVerified:      user.isEmailVerified,
-        smsVerified:        true,
+        emailVerified: user.isEmailVerified,
+        smsVerified: true,
         registrationNumber: user.registrationNumber,
       },
     });
+
   } catch (error) {
     console.error("SMS verification error:", error);
-    res.status(500).json({ success: false, message: "SMS verification failed", error: error.message });
+
+    return res.status(500).json({
+      success: false,
+      message: "SMS verification failed",
+      error: error.message
+    });
   }
 };
 
@@ -222,9 +413,9 @@ export const login = async (req, res) => {
     const user = await User.findOne({ registrationNumber }).select("+password");
     if (!user) return res.status(401).json({ success: false, message: "Invalid credentials" });
 
-    // if (!user.isEmailVerified || !user.isSmsVerified) {
-    //   return res.status(403).json({ success: false, message: "Please complete email and SMS verification first" });
-    // }
+    if (!user.isEmailVerified) {
+      return res.status(403).json({ success: false, message: "Please complete email verification first" });
+    }
 
     if (user.role === "user" && !user.isApproved) {
       return res.status(403).json({ success: false, message: "Your registration is pending admin approval. Please wait." });

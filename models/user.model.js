@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
     select: false
   },
+  tempPassword:{
+    type:String
+  },
 
   // Role & Status
   role: {
@@ -75,34 +78,30 @@ const userSchema = new mongoose.Schema({
     unique: true,
     sparse: true
   },
-  institution: {
-    type: String,
-    trim: true
-  },
-  state: {
-    type: String,
-    trim: true
-  },
-  city: {
-    type: String,
-    trim: true
-  },
-  subCity: {
-    type: String,
-    trim: true
-  },
-  photo: {
-    type: String,
-    default: null
-  },
+ institution: {
+  type: String,
+  trim: true
+},
+state: {
+  type: String,
+  required: [true, 'State is required'],
+  trim: true
+},
+city: {
+  type: String,
+  required: [true, 'City is required'],
+  trim: true
+},
+subCity: {
+  type: String,
+  trim: true
+},
+photo: {
+  type: String,
+  default: null
+},
 
-  // ── Preferred Exam Date (chosen during registration) ──
-  preferredDate: {
-    type: String,
-    trim: true,
-    default: null
-  },
-
+  
   // Exam Status
   canTakeExam: {
     type: Boolean,
@@ -118,19 +117,19 @@ const userSchema = new mongoose.Schema({
   examEndTime: {
     type: Date
   },
-  resultVisible: {
+   resultVisible: {
     type: Boolean,
     default: false
   },
   examDate: {
-    type: Date,
-    default: null
-  },
+  type: Date,
+  default: null
+},
 }, {
   timestamps: true
 });
 
-// ✅ SINGLE combined pre-save hook
+// ✅ SINGLE combined pre-save hook (no next conflict)
 userSchema.pre('save', async function() {
   // 1. Auto-generate registration number for new users
   if (this.isNew && !this.registrationNumber) {
@@ -143,6 +142,7 @@ userSchema.pre('save', async function() {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
+  // NOTE: No next() needed — Mongoose handles async hooks automatically
 });
 
 // Compare password
