@@ -565,7 +565,7 @@ export const sendExamRescheduleEmail = async (email, name, examLink) => {
                 <ul>
                   <li><strong>New Exam Date:</strong> 30th</li>
                   <li><strong>Total Questions:</strong> 120 MCQs</li>
-                  <li><strong>Duration:</strong> 2 hours</li>
+                  <li><strong>Duration:</strong> 1 hours</li>
                   <li><strong>Marking:</strong> 1 mark per question</li>
                 </ul>
               </div>
@@ -647,7 +647,7 @@ export const sendLastChanceExamEmail = async (email, name, examLink) => {
                 <h3 style="margin-top: 0;">📌 Last Chance Exam Details:</h3>
                 <ul>
                   <li><strong>Total Questions:</strong> 120 MCQs</li>
-                  <li><strong>Duration:</strong> 2 hours</li>
+                  <li><strong>Duration:</strong> 1 hours</li>
                   <li><strong>Marking:</strong> 1 mark per question</li>
                   <li><strong>Deadline:</strong> Attempt immediately — no further extensions will be granted</li>
                 </ul>
@@ -720,7 +720,7 @@ export const sendExamReminderEmail = async (email, name) => {
                 <h3 style="margin-top: 0;">📝 Exam Details:</h3>
                 <ul>
                   <li><strong>Total Questions:</strong> 120 MCQs</li>
-                  <li><strong>Duration:</strong> 2 hours</li>
+                  <li><strong>Duration:</strong> 1 hours</li>
                   <li><strong>Type:</strong> Multiple Choice Questions</li>
                   <li><strong>Marking:</strong> 1 mark per question</li>
                 </ul>
