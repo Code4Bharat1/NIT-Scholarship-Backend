@@ -465,42 +465,54 @@ export const getMe = async (req, res) => {
 // @access  Private/Admin
 export const registerAdmin = async (req, res) => {
   try {
-    const { fullName, email, phone, password } = req.body;
+
+    const { fullName, email, phone, password, state, city } = req.body;
+
     if (!fullName || !email || !phone || !password) {
-      return res.status(400).json({ success: false, message: "Please provide fullName, email, phone and password" });
-    }
-    if (!/^[0-9]{10}$/.test(phone)) {
-      return res.status(400).json({ success: false, message: "Phone number must be exactly 10 digits" });
+      return res.status(400).json({
+        success: false,
+        message: "Please provide fullName, email, phone and password"
+      });
     }
 
-    const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phone }]
+    });
+
     if (existingUser) {
-      return res.status(400).json({ success: false, message: "Admin with this email or phone already exists" });
+      return res.status(400).json({
+        success: false,
+        message: "Admin with this email or phone already exists"
+      });
     }
 
     const admin = await User.create({
-      fullName, email, phone, password,
-      role: "admin", isEmailVerified: true, isSmsVerified: true, isApproved: true,
+      fullName,
+      email,
+      phone,
+      password,
+      state,
+      city,
+      role: "admin",
+      isEmailVerified: true,
+      isSmsVerified: true,
+      isApproved: true
     });
-
-    const token = generateToken(admin._id, admin.role);
 
     res.status(201).json({
       success: true,
       message: "Admin registered successfully",
-      token,
-      data: {
-        admin: {
-          id: admin._id, fullName: admin.fullName, email: admin.email,
-          registrationNumber: admin.registrationNumber, role: admin.role,
-        },
-      },
+      data: admin
     });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: "Admin registration failed", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Admin registration failed",
+      error: error.message
+    });
   }
 };
-
 
 export const getAllLocations = async (req, res) => {
   try {

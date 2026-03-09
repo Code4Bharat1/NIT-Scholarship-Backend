@@ -125,6 +125,9 @@ photo: {
   type: Date,
   default: null
 },
+preferredDate: {
+  type: String
+}
 }, {
   timestamps: true
 });
