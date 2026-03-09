@@ -70,7 +70,7 @@ import { generateAdmitCard } from "../utils/generateAdmitCard.js"; // ✅ NEW
 export const register = async (req, res) => {
   try {
 
-    const { fullName, email, phone, institution, state, city, subCity } = req.body;
+    const { fullName, email, phone, institution, state, city, subCity,preferredDate } = req.body;
 
     if (!fullName || !email || !phone) {
       return res.status(400).json({
@@ -116,6 +116,7 @@ export const register = async (req, res) => {
       otpExpires,
       state,
       city,
+      preferredDate, 
       subCity,
       photo: photoBase64
     });
