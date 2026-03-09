@@ -188,13 +188,13 @@ export async function generateAdmitCard(user) {
   // ══════════════════════════════════════════════════════════════
   //  STATUS BADGE — "Pending Admin Approval"
   // ══════════════════════════════════════════════════════════════
-  const BADGE_H = 32;
-  page.drawRectangle({ x: ML, y: y - BADGE_H, width: TW, height: BADGE_H, color: hex('#fff8e7'), borderColor: GOLD, borderWidth: 0.8 });
+  // const BADGE_H = 32;
+  // page.drawRectangle({ x: ML, y: y - BADGE_H, width: TW, height: BADGE_H, color: hex('#fff8e7'), borderColor: GOLD, borderWidth: 0.8 });
 
-  const statusText = 'Status: Pending Admin Approval - You will receive login credentials via email once approved.';
-  page.drawText(statusText, { x: ML + 14, y: y - BADGE_H + 11, size: 8, font: reg, color: hex('#7a4a00') });
+  // // const statusText = 'Status: Pending Admin Approval - You will receive login credentials via email once approved.';
+  // // page.drawText(statusText, { x: ML + 14, y: y - BADGE_H + 11, size: 8, font: reg, color: hex('#7a4a00') });
 
-  y -= BADGE_H + 14;
+  // y -= BADGE_H + 14;
 
   // ══════════════════════════════════════════════════════════════
   //  EXAM INFO TABLE
