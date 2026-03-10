@@ -136,8 +136,22 @@ preferredDate: {
 userSchema.pre('save', async function() {
   // 1. Auto-generate registration number for new users
   if (this.isNew && !this.registrationNumber) {
-    const count = await mongoose.model('User').countDocuments();
-    this.registrationNumber = `SP${new Date().getFullYear()}${String(count + 1).padStart(5, '0')}`;
+    let isUnique = false;
+    let registrationNumber;
+
+    // 🔥 FIX: countDocuments() की जगह random+year use करो
+    // ताकि किसी user को delete करने पर duplicate number न बने
+    while (!isUnique) {
+      const year = new Date().getFullYear();
+      const randomSuffix = Math.floor(10000 + Math.random() * 90000); // 5-digit random (10000–99999)
+      registrationNumber = `SP${year}${randomSuffix}`;
+
+      // Verify uniqueness in DB
+      const existing = await mongoose.model('User').findOne({ registrationNumber });
+      if (!existing) isUnique = true;
+    }
+
+    this.registrationNumber = registrationNumber;
   }
 
   // 2. Hash password only if modified
