@@ -172,8 +172,12 @@ export const sendCredentialsEmail = async (email, name, registrationNumber, pass
 };
 
 // ── Send exam notification email ──────────────────────────────
-export const sendExamNotificationEmail = async (email, name) => {
+export const sendExamNotificationEmail = async (email, name, examDate) => {  // 👈 examDate parameter add
   try {
+
+    // ✅ preferredDate String type है, directly use करो
+    const formattedDate = examDate ?? 'As scheduled';
+
     const mailOptions = {
       from: `"NIT Admin" <${process.env.EMAIL_FROM}>`,
       to: email,
@@ -188,6 +192,7 @@ export const sendExamNotificationEmail = async (email, name) => {
             .header { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
             .info-box { background: white; border-left: 4px solid #f5576c; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .date-highlight { background: #fff3f3; border: 2px solid #f5576c; border-radius: 8px; padding: 15px; text-align: center; margin: 20px 0; }
             .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
@@ -199,12 +204,19 @@ export const sendExamNotificationEmail = async (email, name) => {
             <div class="content">
               <h2>Hello ${name}!</h2>
               <p>Good news! The admin has enabled exam access for you. You can now login and start your exam.</p>
+
+              <!-- ✅ Exam Date highlight box -->
+              <div class="date-highlight">
+                <h3 style="margin:0; color:#f5576c;">📅 Exam Date</h3>
+                <p style="font-size: 20px; font-weight: bold; margin: 8px 0; color: #333;">${formattedDate}</p>
+              </div>
               
               <div class="info-box">
                 <h3>Exam Details:</h3>
                 <ul>
+                  <li><strong>Exam Date:</strong> ${formattedDate}</li>
                   <li><strong>Total Questions:</strong> 120 MCQs</li>
-                  <li><strong>Duration:</strong> 1 hours</li>
+                  <li><strong>Duration:</strong> 1 hour</li>
                   <li><strong>Type:</strong> Multiple Choice Questions</li>
                   <li><strong>Marking:</strong> 1 mark per question</li>
                 </ul>
@@ -212,7 +224,7 @@ export const sendExamNotificationEmail = async (email, name) => {
               
               <p><strong>Instructions:</strong></p>
               <ul>
-                <li>Login with your credentials</li>
+                <li>Login with your credentials on the exam date</li>
                 <li>Read all instructions carefully before starting</li>
                 <li>Once started, timer cannot be paused</li>
                 <li>Ensure stable internet connection</li>
@@ -238,6 +250,7 @@ export const sendExamNotificationEmail = async (email, name) => {
     throw new Error('Failed to send exam notification');
   }
 };
+
 
 // ── Send contact admin email ──────────────────────────────────
 export const sendContactAdminEmail = async (userName, userEmail, userPhone, subject, message) => {
@@ -323,8 +336,10 @@ export const sendContactAdminEmail = async (userName, userEmail, userPhone, subj
   }
 };
 
+
+
 // ── Send result published email ───────────────────────────────
-export const sendResultPublishedEmail = async (email, name, qualified, rank) => {
+export const sendResultPublishedEmail = async (email, name, qualified, rank, score) => {
   try {
     const subject = qualified
       ? "Result Published - Scholar Portal"
@@ -336,6 +351,7 @@ export const sendResultPublishedEmail = async (email, name, qualified, rank) => 
         <p>You have performed very well in the exam.</p>
         <div class="info-box">
           <p><strong>Your Rank:</strong> ${rank ?? "Available in portal"}</p>
+          <p><strong>Your Score:</strong> ${score ?? "Available in portal"}</p>
           <p>You are selected for the next round.</p>
         </div>
         <p>Keep up the great work and wish you success ahead!</p>
@@ -345,6 +361,7 @@ export const sendResultPublishedEmail = async (email, name, qualified, rank) => 
         <p>Your exam result has been published.</p>
         <div class="info-box">
           <p><strong>Your Rank:</strong> ${rank ?? "Available in portal"}</p>
+          <p><strong>Your Score:</strong> ${score ?? "Available in portal"}</p>
           <p>Thank you for participating.</p>
           <p>Unfortunately, you were not selected this time.</p>
         </div>
@@ -687,8 +704,10 @@ export const sendLastChanceExamEmail = async (email, name, examLink) => {
 };
 
 // ── Send exam reminder email (already enabled, not yet attempted) ──
-export const sendExamReminderEmail = async (email, name) => {
+export const sendExamReminderEmail = async (email, name, preferredDate) => {  // 👈 preferredDate parameter add
   try {
+    const formattedDate = preferredDate ?? 'As scheduled';
+
     const mailOptions = {
       from: `"NIT Admin" <${process.env.EMAIL_FROM}>`,
       to: email,
@@ -703,6 +722,7 @@ export const sendExamReminderEmail = async (email, name) => {
             .header { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
             .info-box { background: white; border-left: 4px solid #f7971e; padding: 20px; margin: 20px 0; border-radius: 5px; }
+            .date-highlight { background: #fff8e1; border: 2px solid #ffd200; border-radius: 8px; padding: 15px; text-align: center; margin: 20px 0; }
             .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
             .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
           </style>
@@ -716,18 +736,25 @@ export const sendExamReminderEmail = async (email, name) => {
               <h2>Hello ${name}!</h2>
               <p>This is a reminder that your exam access is <strong>already enabled</strong>. Please login and attempt your exam as soon as possible.</p>
 
+              <!-- ✅ Date highlight box -->
+              <div class="date-highlight">
+                <h3 style="margin:0; color:#f7971e;">📅 Your Exam Date</h3>
+                <p style="font-size: 20px; font-weight: bold; margin: 8px 0; color: #333;">${formattedDate}</p>
+              </div>
+
               <div class="info-box">
                 <h3 style="margin-top: 0;">📝 Exam Details:</h3>
                 <ul>
+                  <li><strong>Exam Date:</strong> ${formattedDate}</li>
                   <li><strong>Total Questions:</strong> 120 MCQs</li>
-                  <li><strong>Duration:</strong> 1 hours</li>
+                  <li><strong>Duration:</strong> 1 hour</li>
                   <li><strong>Type:</strong> Multiple Choice Questions</li>
                   <li><strong>Marking:</strong> 1 mark per question</li>
                 </ul>
               </div>
 
               <div class="warning">
-                <strong>⚠️ Important:</strong> Do not delay — attempt your exam before the deadline. Once the window closes, no further attempts will be allowed.
+                <strong>⚠️ Important:</strong> Do not delay — attempt your exam on your scheduled date. Once the window closes, no further attempts will be allowed.
               </div>
 
               <p><strong>Steps to attempt:</strong></p>

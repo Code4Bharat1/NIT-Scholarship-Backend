@@ -153,7 +153,8 @@ export const enableExamAccess = async (req, res) => {
     await user.save();
 
     try {
-      await sendExamNotificationEmail(user.email, user.fullName);
+      // ✅ preferredDate pass करो
+      await sendExamNotificationEmail(user.email, user.fullName, user.preferredDate);
     } catch (emailError) {
       console.error('Error sending exam notification:', emailError);
     }
@@ -161,12 +162,20 @@ export const enableExamAccess = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Exam access enabled successfully. Notification sent.',
-      data: { user: { id: user._id, fullName: user.fullName, canTakeExam: user.canTakeExam } }
+      data: {
+        user: {
+          id: user._id,
+          fullName: user.fullName,
+          canTakeExam: user.canTakeExam,
+          examDate: user.preferredDate   // 👈 response में भी भेजो
+        }
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error enabling exam access', error: error.message });
   }
 };
+
 
 export const bulkEnableExam = async (req, res) => {
   try {
@@ -228,38 +237,76 @@ export const getUserById = async (req, res) => {
 
 export const publishResults = async (req, res) => {
   try {
-    const results = await Result.find({}).populate('user', 'email fullName').sort({ rank: 1 });
+    const results = await Result.find()
+      .populate({
+        path: "user",
+        select: "fullName email"
+      })
+      .sort({ marksObtained: -1, timeTaken: 1 });
 
-    if (results.length === 0) {
-      return res.status(404).json({ success: false, message: 'No results found to publish' });
+    if (!results.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No results found"
+      });
     }
 
-    await Result.updateMany({}, { isPublished: true });
+    const emailData = [];
 
-    let emailsSent = 0, emailsFailed = 0;
+    for (let i = 0; i < results.length; i++) {
+      // 🔍 DEBUG — yeh dekho terminal mein
+      // console.log(`--- Result ${i + 1} ---`);
+      // console.log("marksObtained:", results[i].marksObtained);
+      // console.log("user:", results[i].user);
 
-    for (const result of results) {
-      if (!result.user?.email) continue;
-      try {
-        const qualified = result.rank !== null && result.rank <= 250;
-        await sendResultPublishedEmail(result.user.email, result.user.fullName, qualified, result.rank);
-        emailsSent++;
-      } catch (err) {
-        emailsFailed++;
-        console.error(`❌ Failed to send to ${result.user.email}:`, err.message);
-      }
+      const snapshot = {
+        email: results[i].user?.email,
+        fullName: results[i].user?.fullName,
+        marksObtained: results[i].marksObtained,
+      };
+
+      results[i].rank = i + 1;
+      await results[i].save();
+
+      snapshot.rank = results[i].rank;
+      emailData.push(snapshot);
+    }
+
+    const SELECTION_LIMIT = 1;
+
+    for (const data of emailData) {
+      if (!data.email) continue;
+
+      // // 🔍 DEBUG — email bhejne se pehle check
+      // console.log("📧 Sending email to:", data.email);
+      // console.log("📊 Score being sent:", data.marksObtained);
+      // console.log("🏆 Rank being sent:", data.rank);
+
+      const selected = data.rank <= SELECTION_LIMIT;
+
+      await sendResultPublishedEmail(
+        data.email,
+        data.fullName,
+        selected,
+        data.rank,
+        data.marksObtained
+      );
     }
 
     res.status(200).json({
       success: true,
-      message: `Results published. Emails sent: ${emailsSent}, Failed: ${emailsFailed}.`,
-      data: { totalResults: results.length, emailsSent, emailsFailed }
+      message: "Results published, ranks calculated and emails sent"
     });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Error publishing results', error: error.message });
+    console.error("Publish error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error publishing results",
+      error: error.message
+    });
   }
 };
-
 export const sendRescheduleReminder = async (req, res) => {
   try {
     const { userId, examLink } = req.body;
@@ -293,12 +340,12 @@ export const sendLastChanceReminder = async (req, res) => {
 export const sendExamReminder = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (user.examAttempted) return res.status(400).json({ success: false, message: 'User has already attempted the exam' });
     if (!user.canTakeExam) return res.status(400).json({ success: false, message: 'Exam not enabled for this user' });
 
-    await sendExamReminderEmail(user.email, user.fullName); // emailService ka function
+    await sendExamReminderEmail(user.email, user.fullName, user.preferredDate); // 👈 preferredDate add
+
     res.json({ success: true, message: `Reminder sent to ${user.email}` });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

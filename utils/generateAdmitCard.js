@@ -98,7 +98,7 @@ export async function generateAdmitCard(user) {
 
   page.drawRectangle({ x: PX, y: PY, width: PW, height: PH, color: LIGHT, borderColor: BORDER, borderWidth: 1 });
 
-  console.log('[AdmitCard] photo present:', !!user.photo, '| preview:', user.photo ? user.photo.substring(0, 60) : 'NULL');
+  // console.log('[AdmitCard] photo present:', !!user.photo, '| preview:', user.photo ? user.photo.substring(0, 60) : 'NULL');
 
   if (user.photo) {
     try {
@@ -130,7 +130,7 @@ export async function generateAdmitCard(user) {
         y: PY + (PH - ih * scale) / 2,
         width: iw * scale, height: ih * scale,
       });
-      console.log('[AdmitCard] Photo embedded OK');
+      // console.log('[AdmitCard] Photo embedded OK');
     } catch (err) {
       console.error('[AdmitCard] Photo embed failed:', err.message);
     }

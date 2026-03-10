@@ -148,7 +148,6 @@ export const getLeaderboard = async (req, res) => {
 
 export const publishResults = async (req, res) => {
   try {
-    // Step 1: Get all attempted results sorted
     const results = await Result.find()
       .populate({
         path: "user",
@@ -163,30 +162,48 @@ export const publishResults = async (req, res) => {
       });
     }
 
-    // Step 2: assign rank
+    const emailData = [];
+
     for (let i = 0; i < results.length; i++) {
+      // 🔍 DEBUG — yeh dekho terminal mein
+      // console.log(`--- Result ${i + 1} ---`);
+      // console.log("marksObtained:", results[i].marksObtained);
+      // console.log("user:", results[i].user);
+
+      const snapshot = {
+        email: results[i].user?.email,
+        fullName: results[i].user?.fullName,
+        marksObtained: results[i].marksObtained,
+      };
+
       results[i].rank = i + 1;
       await results[i].save();
+
+      snapshot.rank = results[i].rank;
+      emailData.push(snapshot);
     }
 
-    // Step 3: selection rule
-    const SELECTION_LIMIT = 1; // change anytime
+    const SELECTION_LIMIT = 1;
 
-    // Step 4: send emails
-    for (const result of results) {
-      if (!result.user?.email) continue;
+    for (const data of emailData) {
+      if (!data.email) continue;
 
-      const selected = result.rank <= SELECTION_LIMIT;
+      // 🔍 DEBUG — email bhejne se pehle check
+      // console.log("📧 Sending email to:", data.email);
+      // console.log("📊 Score being sent:", data.marksObtained);
+      // console.log("🏆 Rank being sent:", data.rank);
+
+      const selected = data.rank <= SELECTION_LIMIT;
 
       await sendResultPublishedEmail(
-        result.user.email,
-        result.user.fullName,
+        data.email,
+        data.fullName,
         selected,
-        result.rank
+        data.rank,
+        data.marksObtained
       );
     }
 
-    // ✅ RESPONSE MUST BE OUTSIDE LOOP
     res.status(200).json({
       success: true,
       message: "Results published, ranks calculated and emails sent"
@@ -201,8 +218,6 @@ export const publishResults = async (req, res) => {
     });
   }
 };
-
-
 
 // @desc    Get result by user ID
 // @route   GET /api/admin/results/user/:userId
