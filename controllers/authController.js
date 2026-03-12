@@ -1,3 +1,6 @@
+// NIT-Scholarship-Backend\controllers\authController.js
+
+
 import User from "../models/user.model.js";
 import { generateToken, generatePassword } from "../utils/jwtUtils.js";
 import { sendOTPEmail, sendCredentialsEmail, sendRegistrationConfirmationEmail } from "../utils/emailService.js";
@@ -97,6 +100,7 @@ export const register = async (req, res) => {
 
     const tempPassword = generatePassword();
     const emailOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    const whatsappOTP = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     let photoBase64 = null;
@@ -113,6 +117,7 @@ export const register = async (req, res) => {
       password: tempPassword,
       tempPassword,
       emailOTP,
+      smsOTP: whatsappOTP,
       otpExpires,
       state,
       city,
@@ -123,8 +128,13 @@ export const register = async (req, res) => {
 
     try {
       await sendOTPEmail(email, emailOTP, fullName);
+       await sendWhatsAppOTP(phone, whatsappOTP, fullName);
+       console.log("Email OTP:", emailOTP);
+console.log("WhatsApp OTP:", whatsappOTP);
     } catch (e) {
       console.error("Error sending email OTP:", e);
+      console.log("Email OTP:", emailOTP);
+console.log("WhatsApp OTP:", whatsappOTP);
     }
 
     res.status(201).json({
@@ -257,80 +267,221 @@ export const verifyEmail = async (req, res) => {
 // @desc    Verify SMS/WhatsApp OTP  ← sends admit card PDF email after verification
 // @route   POST /api/auth/verify-sms
 // @access  Public
+// export const verifySMS = async (req, res) => {
+//   try {
+//     const { phone, otp } = req.body;
+
+//     if (!phone || !otp) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Please provide phone and OTP"
+//       });
+//     }
+
+//     const user = await User.findOne({
+//       phone,
+//       smsOTP: otp,
+//       otpExpires: { $gt: Date.now() },
+//     }).select("+smsOTP +otpExpires +photo +password");
+
+//     if (!user) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid or expired OTP"
+//       });
+//     }
+
+//     // Guard if already verified
+//     if (user.isSmsVerified) {
+//       return res.status(200).json({
+//         success: true,
+//         message: "Phone already verified.",
+//         data: {
+//           emailVerified: user.isEmailVerified,
+//           smsVerified: true,
+//           registrationNumber: user.registrationNumber,
+//         },
+//       });
+//     }
+
+//     // ✅ Verify SMS
+//     user.isSmsVerified = true;
+//     user.smsOTP = undefined;
+//     user.otpExpires = undefined;
+
+//     // ✅ Auto approve
+//     user.isApproved = true;
+//     user.approvedAt = new Date();
+
+//     await user.save();
+
+//     // ✅ Send Admit Card Email
+//     sendAdmitCardEmail(user).catch(err =>
+//       console.error("[AdmitCard] Email failed:", err)
+//     );
+
+//     // ✅ Send login credentials email
+//     sendCredentialsEmail(
+//       user.email,
+//       user.fullName,
+//       user.registrationNumber
+//     ).catch(err =>
+//       console.error("[Credentials] Email failed:", err)
+//     );
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Phone verified successfully! Registration completed.",
+//       data: {
+//         emailVerified: user.isEmailVerified,
+//         smsVerified: true,
+//         registrationNumber: user.registrationNumber,
+//       },
+//     });
+
+//   } catch (error) {
+//     console.error("SMS verification error:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: "SMS verification failed",
+//       error: error.message
+//     });
+//   }
+// };
+
+
+
+// export const verifySMS = async (req, res) => {
+//   try {
+
+//     const { phone, otp } = req.body;
+
+//     if (!phone || !otp) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Phone number and OTP are required"
+//       });
+//     }
+
+//     // User find karo
+//     const user = await User.findOne({
+      
+//       phone: phone,
+//       smsOTP: otp,
+//       otpExpires: { $gt: Date.now() }
+//     }).select("+smsOTP +otpExpires");
+
+//     if (!user) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid or expired OTP"
+//       });
+//     }
+
+//     // Agar already verified hai
+//     if (user.isSmsVerified) {
+//       return res.status(200).json({
+//         success: true,
+//         message: "Phone number already verified"
+//       });
+//     }
+
+//     // OTP verify
+//     user.isSmsVerified = true;
+//     user.smsOTP = undefined;
+//     user.otpExpires = undefined;
+
+//     await user.save();
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Phone number verified successfully",
+//       data: {
+//         phoneVerified: true,
+//         registrationNumber: user.registrationNumber
+//       }
+//     });
+
+//   } catch (error) {
+
+//     console.error("SMS Verification Error:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: "SMS verification failed",
+//       error: error.message
+//     });
+//   }
+// };
+
+
 export const verifySMS = async (req, res) => {
   try {
+
     const { phone, otp } = req.body;
 
     if (!phone || !otp) {
       return res.status(400).json({
         success: false,
-        message: "Please provide phone and OTP"
+        message: "Phone number and OTP are required"
       });
     }
 
-    const user = await User.findOne({
-      phone,
-      smsOTP: otp,
-      otpExpires: { $gt: Date.now() },
-    }).select("+smsOTP +otpExpires +photo +password");
+    const phoneNumber = phone.toString().trim();
+    const otpCode = otp.toString().trim();
+
+    console.log("Verify Request:", phoneNumber, otpCode);
+
+    // User find karo
+    const user = await User.findOne({ phone: phoneNumber })
+      .select("+smsOTP +otpExpires");
 
     if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    console.log("DB OTP:", user.smsOTP);
+    console.log("Entered OTP:", otpCode);
+
+    // OTP check
+    if (user.smsOTP !== otpCode || user.otpExpires < Date.now()) {
       return res.status(400).json({
         success: false,
         message: "Invalid or expired OTP"
       });
     }
 
-    // Guard if already verified
+    // Already verified
     if (user.isSmsVerified) {
       return res.status(200).json({
         success: true,
-        message: "Phone already verified.",
-        data: {
-          emailVerified: user.isEmailVerified,
-          smsVerified: true,
-          registrationNumber: user.registrationNumber,
-        },
+        message: "Phone already verified"
       });
     }
 
-    // ✅ Verify SMS
+    // Verify
     user.isSmsVerified = true;
     user.smsOTP = undefined;
     user.otpExpires = undefined;
 
-    // ✅ Auto approve
-    user.isApproved = true;
-    user.approvedAt = new Date();
-
     await user.save();
-
-    // ✅ Send Admit Card Email
-    sendAdmitCardEmail(user).catch(err =>
-      console.error("[AdmitCard] Email failed:", err)
-    );
-
-    // ✅ Send login credentials email
-    sendCredentialsEmail(
-      user.email,
-      user.fullName,
-      user.registrationNumber
-    ).catch(err =>
-      console.error("[Credentials] Email failed:", err)
-    );
 
     return res.status(200).json({
       success: true,
-      message: "Phone verified successfully! Registration completed.",
+      message: "Phone verified successfully",
       data: {
-        emailVerified: user.isEmailVerified,
-        smsVerified: true,
-        registrationNumber: user.registrationNumber,
-      },
+        phoneVerified: true,
+        registrationNumber: user.registrationNumber
+      }
     });
 
   } catch (error) {
-    console.error("SMS verification error:", error);
+
+    console.error("SMS Verification Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -381,15 +532,25 @@ export const resendOTP = async (req, res) => {
       await user.save();
       await sendOTPEmail(user.email, newOTP, user.fullName);
     } else if (type === "sms") {
-      user.smsOTP      = newOTP;
-      user.otpExpires  = otpExpires;
-      await user.save();
-      if (process.env.NODE_ENV === "production") {
-        await sendOTPSMS(user.phone, newOTP, user.fullName);
-      } else {
-        await sendMockOTPSMS(user.phone, newOTP, user.fullName);
-      }
-    } else {
+
+  user.smsOTP = newOTP.toString();
+  user.otpExpires = otpExpires;
+
+  await user.save();
+
+  try {
+
+    await sendWhatsAppOTP(user.phone, newOTP, user.fullName);
+
+    console.log("WhatsApp OTP Resent:", newOTP);
+
+  } catch (err) {
+
+    console.error("WhatsApp resend error:", err);
+
+  }
+
+}else {
       return res.status(400).json({ success: false, message: "Invalid OTP type" });
     }
 
