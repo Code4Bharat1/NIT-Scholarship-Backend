@@ -512,6 +512,8 @@ async function sendAdmitCardEmail(user) {
 }
 
 
+
+
 // @desc    Resend OTP
 // @route   POST /api/auth/resend-otp
 // @access  Public
