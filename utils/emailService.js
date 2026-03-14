@@ -4,10 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // ── Debug: log env on startup ─────────────────────────────────
-console.log('📧 Email Config Check:');
-console.log('  EMAIL_USER:', process.env.EMAIL_USER || '❌ NOT SET');
-console.log('  EMAIL_FROM:', process.env.EMAIL_FROM || '❌ NOT SET');
-console.log('  EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ SET' : '❌ NOT SET');
+// console.log('📧 Email Config Check:');
+// console.log('  EMAIL_USER:', process.env.EMAIL_USER || '❌ NOT SET');
+// console.log('  EMAIL_FROM:', process.env.EMAIL_FROM || '❌ NOT SET');
+// console.log('  EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ SET' : '❌ NOT SET');
 
 // Create transporter
 const transporter = nodemailer.createTransport({
@@ -29,7 +29,7 @@ transporter.verify((error, success) => {
     console.error('❌ Email configuration error:', error.message);
     console.error('   → Make sure EMAIL_USER, EMAIL_PASS (App Password), EMAIL_FROM are set in .env');
   } else {
-    console.log('✅ Email server is ready to send messages');
+    // console.log('✅ Email server is ready to send messages');
   }
 });
 
@@ -83,7 +83,7 @@ export const sendOTPEmail = async (email, otp, name) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ OTP email sent to ${email} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ OTP email sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending OTP email:', error.message);
@@ -163,7 +163,7 @@ export const sendCredentialsEmail = async (email, name, registrationNumber, pass
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Credentials email sent to ${email} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ Credentials email sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending credentials email:', error.message);
@@ -247,7 +247,7 @@ export const sendExamNotificationEmail = async (email, name, examDate) => {  // 
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Exam notification sent to ${email} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ Exam notification sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending exam notification:', error.message);
@@ -332,7 +332,7 @@ export const sendContactAdminEmail = async (userName, userEmail, userPhone, subj
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Contact admin email sent from ${userEmail} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ Contact admin email sent from ${userEmail} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending contact admin email:', error.message);
@@ -411,7 +411,7 @@ export const sendResultPublishedEmail = async (email, name, qualified, rank, sco
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Result email sent to ${email} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ Result email sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error("❌ Error sending result email:", error.message);
@@ -544,7 +544,7 @@ export const sendRegistrationConfirmationEmail = async (email, fullName, registr
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Registration confirmation sent to ${email} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ Registration confirmation sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending registration confirmation email:', error.message);
@@ -623,7 +623,7 @@ export const sendExamRescheduleEmail = async (email, name, examLink) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Exam reschedule email sent to ${email} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ Exam reschedule email sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending exam reschedule email:', error.message);
@@ -702,7 +702,7 @@ export const sendLastChanceExamEmail = async (email, name, examLink) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Last chance exam email sent to ${email} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ Last chance exam email sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending last chance exam email:', error.message);
@@ -784,7 +784,7 @@ export const sendExamReminderEmail = async (email, name, preferredDate) => {  //
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Exam reminder sent to ${email} — MessageId: ${info.messageId}`);
+    // console.log(`✉️ Exam reminder sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending exam reminder email:', error.message);

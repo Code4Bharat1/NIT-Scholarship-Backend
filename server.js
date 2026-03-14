@@ -131,13 +131,13 @@ const server = app.listen(PORT, () => {
   console.log(`🌐 Server running on port: ${PORT}`);
   console.log(`🔗 API URL: http://localhost:${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log('='.repeat(60));
-  console.log('📝 Available Routes:');
-  console.log('   • Auth:    /api/auth');
-  console.log('   • Admin:   /api/admin');
-  console.log('   • Exam:    /api/exam');
-  console.log('   • Results: /api/admin/results');
-  console.log('='.repeat(60));
+  // console.log('='.repeat(60));
+  // console.log('📝 Available Routes:');
+  // console.log('   • Auth:    /api/auth');
+  // console.log('   • Admin:   /api/admin');
+  // console.log('   • Exam:    /api/exam');
+  // console.log('   • Results: /api/admin/results');
+  // console.log('='.repeat(60));
 });
 
 // Handle unhandled promise rejections

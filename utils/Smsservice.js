@@ -12,7 +12,7 @@ try {
       process.env.TWILIO_ACCOUNT_SID,
       process.env.TWILIO_AUTH_TOKEN
     );
-    console.log('✅ Twilio SMS service initialized');
+    // console.log('✅ Twilio SMS service initialized');
   } else {
     console.warn('⚠️ Twilio credentials not found. SMS service disabled.');
   }
@@ -36,7 +36,7 @@ export const sendOTPSMS = async (phone, otp, name) => {
       to: formattedPhone
     });
 
-    console.log(`📱 SMS OTP sent to ${formattedPhone} | SID: ${message.sid}`);
+    // console.log(`📱 SMS OTP sent to ${formattedPhone} | SID: ${message.sid}`);
     return { success: true, sid: message.sid };
   } catch (error) {
     console.error('❌ Error sending SMS:', error);
@@ -46,7 +46,7 @@ export const sendOTPSMS = async (phone, otp, name) => {
 
 // Alternative: Mock SMS service for development
 export const sendMockOTPSMS = async (phone, otp, name) => {
-  console.log(`📱 [MOCK SMS] To: ${phone} | OTP: ${otp} | Name: ${name}`);
+  // console.log(`📱 [MOCK SMS] To: ${phone} | OTP: ${otp} | Name: ${name}`);
   return { success: true, mock: true };
 };
 

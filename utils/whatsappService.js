@@ -249,7 +249,7 @@ export const sendWhatsAppOTP = async (phone, otp, name) => {
       templateArgs: [otp]
     };
 
-    console.log("Sending WhatsApp OTP:", payload);
+    // console.log("Sending WhatsApp OTP:", payload);
 
     const response = await axios.post(
       process.env.NEXTEL_ENDPOINT,
@@ -262,7 +262,7 @@ export const sendWhatsAppOTP = async (phone, otp, name) => {
       }
     );
 
-    console.log("Nextel Response:", response.data);
+    // console.log("Nextel Response:", response.data);
 
     return response.data;
 
@@ -336,7 +336,7 @@ export const sendWhatsAppCredentials = async (phone, name, regNo, password) => {
       }
     );
 
-    console.log("WhatsApp Credentials Sent:", response.data);
+    // console.log("WhatsApp Credentials Sent:", response.data);
     return response.data;
 
   } catch (error) {
