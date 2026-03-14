@@ -957,9 +957,7 @@ export const resendOTP = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────
 // @route POST /api/auth/login
-// ─────────────────────────────────────────────
 export const login = async (req, res) => {
   try {
     const { registrationNumber, password } = req.body;
@@ -996,13 +994,18 @@ export const login = async (req, res) => {
       token,
       data: {
         user: {
-          id: user._id,
-          fullName: user.fullName,
-          email: user.email,
+          id:                 user._id,
+          fullName:           user.fullName,
+          email:              user.email,
           registrationNumber: user.registrationNumber,
-          role: user.role,
-          canTakeExam: user.canTakeExam,
-          examAttempted: user.examAttempted,
+          role:               user.role,
+          canTakeExam:        user.canTakeExam,
+          examAttempted:      user.examAttempted,
+          preferredDate:      user.preferredDate,   // ✅ add kiya
+          photo:              user.photo,            // ✅ add kiya (avatar ke liye)
+          institution:        user.institution,      // ✅ add kiya
+          state:              user.state,            // ✅ add kiya
+          city:               user.city,             // ✅ add kiya
         },
       },
     });
@@ -1013,12 +1016,18 @@ export const login = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────
 // @route GET /api/auth/me
-// ─────────────────────────────────────────────
 export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    // ✅ password aur sensitive fields exclude karo explicitly
+    const user = await User.findById(req.user.id).select(
+      "-password -emailOTP -smsOTP -otpExpires -tempPassword"
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
     res.status(200).json({ success: true, data: { user } });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching user data", error: error.message });

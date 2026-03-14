@@ -91,71 +91,107 @@ export const sendOTPEmail = async (email, otp, name) => {
   }
 };
 
-// ── Send credentials email after approval ────────────────────
 export const sendCredentialsEmail = async (email, name, registrationNumber, password) => {
   try {
+    const PORTAL_URL = "https://scholarship.nexcoreinstitute.org/";
+
     const mailOptions = {
-      from: `"NIT Admin" <${process.env.EMAIL_FROM}>`,
+      from: `"Scholar Portal" <${process.env.EMAIL_FROM}>`,
       to: email,
-      subject: 'Registration Approved - Login Credentials',
+      subject: '🎉 Registration Approved — Your Login Credentials',
       html: `
         <!DOCTYPE html>
         <html>
         <head>
           <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-            .credentials-box { background: white; border-left: 4px solid #11998e; padding: 20px; margin: 20px 0; border-radius: 5px; }
-            .credential-item { margin: 15px 0; }
-            .label { font-weight: bold; color: #666; }
-            .value { font-size: 18px; color: #11998e; font-family: monospace; }
-            .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
-            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f4f4f4; }
+            .container { max-width: 600px; margin: 30px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+            .header { background: linear-gradient(135deg, #1a237e 0%, #1565c0 100%); color: white; padding: 36px 30px; text-align: center; }
+            .header h1 { margin: 0 0 6px; font-size: 26px; }
+            .header p { margin: 0; opacity: 0.85; font-size: 14px; }
+            .content { padding: 32px 30px; }
+            .greeting { font-size: 17px; font-weight: bold; color: #1a237e; margin-bottom: 10px; }
+            .credentials-box { background: #f0f4ff; border: 1.5px solid #c5cae9; border-radius: 10px; padding: 24px; margin: 24px 0; }
+            .credentials-box h3 { margin: 0 0 16px; color: #1a237e; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+            .credential-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #dde2f0; }
+            .credential-row:last-child { border-bottom: none; }
+            .cred-label { color: #666; font-size: 13px; }
+            .cred-value { font-family: monospace; font-size: 17px; font-weight: bold; color: #1565c0; letter-spacing: 1px; background: #fff; padding: 4px 12px; border-radius: 6px; border: 1px solid #c5cae9; }
+            .login-btn { display: block; text-align: center; background: linear-gradient(135deg, #1a237e 0%, #1565c0 100%); color: #fff !important; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: bold; margin: 24px 0; letter-spacing: 0.3px; }
+            .url-box { background: #f9f9f9; border: 1px dashed #ccc; border-radius: 6px; padding: 10px 16px; text-align: center; font-family: monospace; font-size: 13px; color: #555; margin-bottom: 24px; }
+            .warning { background: #fff8e1; border-left: 4px solid #ffc107; padding: 14px 18px; border-radius: 6px; margin: 20px 0; font-size: 13px; }
+            .warning ul { margin: 8px 0 0; padding-left: 18px; }
+            .steps { background: #e8f5e9; border-left: 4px solid #43a047; padding: 14px 18px; border-radius: 6px; margin: 20px 0; font-size: 13px; }
+            .steps ul { margin: 8px 0 0; padding-left: 18px; }
+            .footer { background: #f5f5f5; text-align: center; padding: 18px; color: #999; font-size: 12px; border-top: 1px solid #eee; }
           </style>
         </head>
         <body>
           <div class="container">
+
             <div class="header">
               <h1>🎉 Registration Approved!</h1>
+              <p>Welcome to Scholar Portal — your exam journey starts here</p>
             </div>
+
             <div class="content">
-              <h2>Congratulations ${name}!</h2>
-              <p>Your registration has been approved by the admin. You can now login to Scholar Portal using the credentials below:</p>
-              
+              <div class="greeting">Congratulations, ${name}!</div>
+              <p style="color:#555; font-size:14px; margin-top:0;">
+                Your application has been reviewed and approved by the admin. 
+                Use the credentials below to log in to the Scholar Portal.
+              </p>
+
+              <!-- Credentials Box -->
               <div class="credentials-box">
-                <div class="credential-item">
-                  <div class="label">Registration Number:</div>
-                  <div class="value">${registrationNumber}</div>
+                <h3>🔐 Your Login Credentials</h3>
+                <div class="credential-row">
+                  <span class="cred-label">Registration Number</span>
+                  <span class="cred-value">${registrationNumber}</span>
                 </div>
-                <div class="credential-item">
-                  <div class="label">Password:</div>
-                  <div class="value">${password}</div>
+                <div class="credential-row">
+                  <span class="cred-label">Password</span>
+                  <span class="cred-value">${password}</span>
                 </div>
               </div>
-              
+
+              <!-- Login Button -->
+              <a href="${PORTAL_URL}" class="login-btn">
+                🚀 Login to Scholar Portal
+              </a>
+              <div class="url-box">
+                Or copy this link: ${PORTAL_URL}
+              </div>
+
+              <!-- Security Warning -->
               <div class="warning">
-                <strong>⚠️ Important Security Notice:</strong>
+                <strong>⚠️ Security Notice:</strong>
                 <ul>
-                  <li>Please change your password immediately after first login</li>
                   <li>Do not share your credentials with anyone</li>
-                  <li>Keep this email secure</li>
+                  <li>Keep this email secure and confidential</li>
+                  <li>Contact admin if you did not request this</li>
                 </ul>
               </div>
-              
-              <p><strong>What's Next?</strong></p>
-              <ul>
-                <li>Login with your credentials</li>
-                <li>Wait for admin to enable exam access</li>
-                <li>Check your email for exam schedule</li>
-              </ul>
-              
-              <p>Good luck with your exam!</p>
+
+              <!-- Next Steps -->
+              <div class="steps">
+                <strong>✅ What's Next?</strong>
+                <ul>
+                  <li>Login using the credentials above</li>
+                  <li>Wait for admin to enable your exam access</li>
+                  <li>You will be notified via email when the exam is ready</li>
+                </ul>
+              </div>
+
+              <p style="color:#555; font-size:14px;">
+                Best of luck for your exam! If you have any questions, please contact the admin.
+              </p>
             </div>
+
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Scholar Portal. All rights reserved.</p>
+              © ${new Date().getFullYear()} Scholar Portal — Nexcore Institute. All rights reserved.<br/>
+              <a href="${PORTAL_URL}" style="color:#1565c0; text-decoration:none;">${PORTAL_URL}</a>
             </div>
+
           </div>
         </body>
         </html>
@@ -163,18 +199,12 @@ export const sendCredentialsEmail = async (email, name, registrationNumber, pass
     };
 
     const info = await transporter.sendMail(mailOptions);
-    // console.log(`✉️ Credentials email sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending credentials email:', error.message);
     throw new Error('Failed to send credentials email');
   }
 };
-
-
-
-
-
 // ── Send exam notification email ──────────────────────────────
 export const sendExamNotificationEmail = async (email, name, examDate) => {  // 👈 examDate parameter add
   try {
@@ -254,7 +284,6 @@ export const sendExamNotificationEmail = async (email, name, examDate) => {  // 
     throw new Error('Failed to send exam notification');
   }
 };
-
 
 // ── Send contact admin email ──────────────────────────────────
 export const sendContactAdminEmail = async (userName, userEmail, userPhone, subject, message) => {
@@ -340,11 +369,6 @@ export const sendContactAdminEmail = async (userName, userEmail, userPhone, subj
   }
 };
 
-
-
-
-
-
 // ── Send result published email ───────────────────────────────
 export const sendResultPublishedEmail = async (email, name, qualified, rank, score) => {
   try {
@@ -418,11 +442,12 @@ export const sendResultPublishedEmail = async (email, name, qualified, rank, sco
     throw new Error("Failed to send result email");
   }
 };
-
-// ── Send registration confirmation email with admit card PDF ──
+//--admin pdf
 export const sendRegistrationConfirmationEmail = async (email, fullName, registrationNumber, pdfBuffer) => {
   try {
     if (!pdfBuffer) throw new Error('pdfBuffer is null or undefined — generateAdmitCard() may have failed');
+
+    const PORTAL_URL = 'https://scholarship.nexcoreinstitute.org/';
 
     const mailOptions = {
       from: `"Nexcore Institute of Technology" <${process.env.EMAIL_FROM}>`,
@@ -509,6 +534,35 @@ export const sendRegistrationConfirmationEmail = async (email, fullName, registr
                     </tr>
                   </table>
 
+                  <!-- ✅ Portal Login Button -->
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                    <tr>
+                      <td style="background:#f0f4ff;border:1.5px solid #c5cae9;border-radius:10px;padding:20px 24px;">
+                        <p style="margin:0 0 14px;font-size:13px;color:#1a2a5e;font-weight:600;">
+                          🔗 Scholar Portal Access
+                        </p>
+                        <p style="margin:0 0 16px;font-size:13px;color:#5a6380;line-height:1.6;">
+                          Once your application is approved, you can log in to the Scholar Portal using your registration number and the credentials that will be sent to you via email.
+                        </p>
+                        <!-- Button -->
+                        <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+                          <tr>
+                            <td style="background:linear-gradient(135deg,#1a2a5e 0%,#1565c0 100%);border-radius:8px;text-align:center;">
+                              <a href="${PORTAL_URL}"
+                                style="display:inline-block;padding:12px 32px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.3px;">
+                                🚀 Visit Scholar Portal
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                        <!-- URL fallback -->
+                        <p style="margin:12px 0 0;font-size:11px;color:#9DB8E8;text-align:center;">
+                          Or copy: <a href="${PORTAL_URL}" style="color:#1565c0;font-weight:600;text-decoration:none;">${PORTAL_URL}</a>
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+
                   <p style="font-size:13px;color:#5a6380;line-height:1.7;margin:0;">
                     If you have any questions, feel free to contact us at
                     <a href="mailto:director@nexcoreinstitute.org" style="color:#1a2a5e;font-weight:600;">director@nexcoreinstitute.org</a>
@@ -520,11 +574,13 @@ export const sendRegistrationConfirmationEmail = async (email, fullName, registr
               <!-- Footer -->
               <tr>
                 <td style="background:#1a2a5e;padding:20px 40px;text-align:center;">
-                  <p style="margin:0;font-size:11px;color:#9DB8E8;line-height:1.7;">
+                  <p style="margin:0 0 8px;font-size:11px;color:#9DB8E8;line-height:1.7;">
                     Campus - 1A, 1B &amp; 2, Lower Ground Floor, New White House, Building No. 3,<br/>
                     Opp. Kabir Hospital, Buddha Colony, Kurla West, Mumbai, Maharashtra - 400070.<br/>
-                    <span style="color:#ffffff;">nexcoreinstitute.org</span>
                   </p>
+                  <a href="${PORTAL_URL}" style="font-size:12px;color:#ffffff;font-weight:600;text-decoration:none;">
+                    ${PORTAL_URL}
+                  </a>
                 </td>
               </tr>
 
@@ -537,21 +593,19 @@ export const sendRegistrationConfirmationEmail = async (email, fullName, registr
       attachments: [
         {
           filename: `AdmitCard_${registrationNumber}.pdf`,
-          content:  pdfBuffer,           // Buffer from generateAdmitCard()
+          content:  pdfBuffer,
           contentType: 'application/pdf',
         },
       ],
     };
 
     const info = await transporter.sendMail(mailOptions);
-    // console.log(`✉️ Registration confirmation sent to ${email} — MessageId: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error('❌ Error sending registration confirmation email:', error.message);
     throw new Error('Failed to send registration confirmation email');
   }
 };
-
 // ── Send exam reschedule opportunity email (missed 27, 28, 29) ──
 export const sendExamRescheduleEmail = async (email, name, examLink) => {
   try {
