@@ -706,7 +706,7 @@
 
 // export default { register, registerAdmin, verifyEmail, verifySMS, resendOTP, login, getMe, getAllLocations };
 import User from "../models/user.model.js";
-import PendingRegistration from "../models/pendingRegistration.model.js";
+import PendingRegistration from "../models/pendingregistration.model.js";
 import { generateToken, generatePassword } from "../utils/jwtUtils.js";
 import {
   sendOTPEmail,
