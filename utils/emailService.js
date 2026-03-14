@@ -171,6 +171,10 @@ export const sendCredentialsEmail = async (email, name, registrationNumber, pass
   }
 };
 
+
+
+
+
 // ── Send exam notification email ──────────────────────────────
 export const sendExamNotificationEmail = async (email, name, examDate) => {  // 👈 examDate parameter add
   try {
@@ -335,6 +339,9 @@ export const sendContactAdminEmail = async (userName, userEmail, userPhone, subj
     throw new Error('Failed to send contact admin email');
   }
 };
+
+
+
 
 
 

@@ -6,7 +6,7 @@ import { generateToken, generatePassword } from "../utils/jwtUtils.js";
 import { sendOTPEmail, sendCredentialsEmail, sendRegistrationConfirmationEmail } from "../utils/emailService.js";
 import { sendOTPSMS, sendMockOTPSMS } from "../utils/Smsservice.js";
 import Location from "../models/location.model.js";
-import { sendWhatsAppOTP } from "../utils/whatsappService.js";
+import { sendWhatsAppOTP, sendWhatsAppCredentials } from "../utils/whatsappService.js";
 import { generateAdmitCard } from "../utils/generateAdmitCard.js"; // ✅ NEW
 
 // @desc    Register new user
@@ -73,7 +73,7 @@ import { generateAdmitCard } from "../utils/generateAdmitCard.js"; // ✅ NEW
 export const register = async (req, res) => {
   try {
 
-    const { fullName, email, phone, institution, state, city, subCity,preferredDate } = req.body;
+    const { fullName, email, phone, institution, state, city, subCity, preferredDate } = req.body;
 
     if (!fullName || !email || !phone) {
       return res.status(400).json({
@@ -121,20 +121,20 @@ export const register = async (req, res) => {
       otpExpires,
       state,
       city,
-      preferredDate, 
+      preferredDate,
       subCity,
       photo: photoBase64
     });
 
     try {
       await sendOTPEmail(email, emailOTP, fullName);
-       await sendWhatsAppOTP(phone, whatsappOTP, fullName);
-       console.log("Email OTP:", emailOTP);
-console.log("WhatsApp OTP:", whatsappOTP);
+      await sendWhatsAppOTP(phone, whatsappOTP, fullName);
+      console.log("Email OTP:", emailOTP);
+      console.log("WhatsApp OTP:", whatsappOTP);
     } catch (e) {
       console.error("Error sending email OTP:", e);
       console.log("Email OTP:", emailOTP);
-console.log("WhatsApp OTP:", whatsappOTP);
+      console.log("WhatsApp OTP:", whatsappOTP);
     }
 
     res.status(201).json({
@@ -228,6 +228,14 @@ export const verifyEmail = async (req, res) => {
 
     await user.save();
 
+    // await sendWhatsAppCredentials(
+    //   user.phone,
+    //   user.fullName,
+    //   user.registrationNumber,
+    //   user.tempPassword
+    // );
+
+
     // ✅ Send Admit Card Email
     sendAdmitCardEmail(user).catch(err =>
       console.error("[AdmitCard] Email failed:", err)
@@ -242,6 +250,8 @@ export const verifyEmail = async (req, res) => {
     ).catch(err =>
       console.error("[Credentials] Email failed:", err)
     );
+
+
 
     res.status(200).json({
       success: true,
@@ -366,7 +376,7 @@ export const verifyEmail = async (req, res) => {
 
 //     // User find karo
 //     const user = await User.findOne({
-      
+
 //       phone: phone,
 //       smsOTP: otp,
 //       otpExpires: { $gt: Date.now() }
@@ -469,6 +479,13 @@ export const verifySMS = async (req, res) => {
     user.otpExpires = undefined;
 
     await user.save();
+    await sendWhatsAppCredentials(
+      user.phone,
+      user.fullName,
+      user.registrationNumber,
+      user.tempPassword
+    );
+
 
     return res.status(200).json({
       success: true,
@@ -496,14 +513,14 @@ async function sendAdmitCardEmail(user) {
   // Generate the admit card PDF buffer
   const pdfBuffer = await generateAdmitCard({
     registrationNumber: user.registrationNumber,
-    fullName:           user.fullName,
-    email:              user.email,
-    phone:              user.phone,
-    institution:        user.institution,
-    state:              user.state,
-    city:               user.city,
-    subCity:            user.subCity,
-    photo:              user.photo,
+    fullName: user.fullName,
+    email: user.email,
+    phone: user.phone,
+    institution: user.institution,
+    state: user.state,
+    city: user.city,
+    subCity: user.subCity,
+    photo: user.photo,
   });
 
   // Send via your existing email service
@@ -525,34 +542,34 @@ export const resendOTP = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-    const newOTP     = Math.floor(100000 + Math.random() * 900000).toString();
+    const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     if (type === "email") {
-      user.emailOTP    = newOTP;
-      user.otpExpires  = otpExpires;
+      user.emailOTP = newOTP;
+      user.otpExpires = otpExpires;
       await user.save();
       await sendOTPEmail(user.email, newOTP, user.fullName);
     } else if (type === "sms") {
 
-  user.smsOTP = newOTP.toString();
-  user.otpExpires = otpExpires;
+      user.smsOTP = newOTP.toString();
+      user.otpExpires = otpExpires;
 
-  await user.save();
+      await user.save();
 
-  try {
+      try {
 
-    await sendWhatsAppOTP(user.phone, newOTP, user.fullName);
+        await sendWhatsAppOTP(user.phone, newOTP, user.fullName);
 
-    console.log("WhatsApp OTP Resent:", newOTP);
+        console.log("WhatsApp OTP Resent:", newOTP);
 
-  } catch (err) {
+      } catch (err) {
 
-    console.error("WhatsApp resend error:", err);
+        console.error("WhatsApp resend error:", err);
 
-  }
+      }
 
-}else {
+    } else {
       return res.status(400).json({ success: false, message: "Invalid OTP type" });
     }
 

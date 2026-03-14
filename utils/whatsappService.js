@@ -271,3 +271,75 @@ export const sendWhatsAppOTP = async (phone, otp, name) => {
     throw error;
   }
 };
+
+// export const sendWhatsAppCredentials = async (phone, name, regNo, password) => {
+//   try {
+
+//     const payload = {
+//       type: "buttonTemplate",
+//       templateId: "registration_credentials",
+//       templateLanguage: "en",
+//       sender_phone: `91${phone}`,
+//       templateArgs: [
+//         name,
+//         regNo,
+//         password
+//       ]
+//     };
+
+//     const response = await axios.post(
+//       process.env.NEXTEL_ENDPOINT,
+//       payload,
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${process.env.NEXTEL_API_KEY}`,
+//         },
+//       }
+//     );
+
+//     console.log("WhatsApp Credentials Sent:", response.data);
+
+//     return response.data;
+
+//   } catch (error) {
+
+//     console.error("WhatsApp Credentials Error:", error.response?.data || error.message);
+
+//   }
+// };
+
+export const sendWhatsAppCredentials = async (phone, name, regNo, password) => {
+  try {
+
+    const payload = {
+      type: "buttonTemplate",
+      templateId: "registered",
+      templateLanguage: "en",
+      sender_phone: `91${phone}`,
+      templateArgs: [
+        name,        // {{1}}
+        regNo,       // {{2}}
+        "Password",  // {{3}}
+        password     // {{4}}
+      ]
+    };
+
+    const response = await axios.post(
+      process.env.NEXTEL_ENDPOINT,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXTEL_API_KEY}`,
+        },
+      }
+    );
+
+    console.log("WhatsApp Credentials Sent:", response.data);
+    return response.data;
+
+  } catch (error) {
+    console.error("WhatsApp Credentials Error:", error.response?.data || error.message);
+  }
+};
