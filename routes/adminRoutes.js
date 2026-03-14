@@ -11,7 +11,10 @@ import {
   publishResults,
   sendLastChanceReminder,
   sendRescheduleReminder,
-  sendExamReminder,         // ✅ add kiya
+  sendExamReminder,
+  disableExamAccess,
+  bulkDisableExam,
+  deleteUser,         // ✅ add kiya
 } from '../controllers/adminController.js';
 
 // ✅ NEW: import export controllers
@@ -35,8 +38,11 @@ router.get('/users/approved',               getApprovedUsers);
 router.get('/users/:id',                    getUserById);
 router.post('/users/:id/approve',           approveUser);
 router.post('/users/:id/enable-exam',       enableExamAccess);
+router.post('/users/:id/disable-exam',      disableExamAccess); 
 router.post('/users/:id/send-reminder',     sendExamReminder);   // ✅ add kiya
+router.delete('/users/:id', deleteUser);
 router.post('/users/bulk-enable-exam',      bulkEnableExam);
+router.post('/users/bulk-disable-exam',  bulkDisableExam); 
 
 // ── Results ──────────────────────────────────────────────────
 router.post('/results/publish', publishResults);

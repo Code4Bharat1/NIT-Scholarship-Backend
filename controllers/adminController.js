@@ -141,6 +141,22 @@ export const approveUser = async (req, res) => {
   }
 };
 
+export const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    if (user.role === 'admin') return res.status(403).json({ success: false, message: 'Cannot delete an admin account' });
+
+    await Result.deleteOne({ user: user._id }); // result bhi saaf karo
+    await User.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error deleting user', error: error.message });
+  }
+};
+
 export const enableExamAccess = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -176,19 +192,50 @@ export const enableExamAccess = async (req, res) => {
   }
 };
 
+export const disableExamAccess = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    if (!user.isApproved) return res.status(400).json({ success: false, message: 'User is not approved' });
+    if (!user.canTakeExam) return res.status(400).json({ success: false, message: 'Exam access is already disabled' });
+    if (user.examAttempted) return res.status(400).json({ success: false, message: 'User has already attempted the exam — cannot disable' });
+
+    user.canTakeExam = false;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Exam access disabled successfully.',
+      data: {
+        user: {
+          id: user._id,
+          fullName: user.fullName,
+          canTakeExam: user.canTakeExam,
+        }
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error disabling exam access', error: error.message });
+  }
+};
 
 export const bulkEnableExam = async (req, res) => {
   try {
-    const { userIds } = req.body;
+    const { userIds, preferredDate } = req.body;
 
-    if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
-      return res.status(400).json({ success: false, message: 'Please provide an array of user IDs' });
+    let filter = { isApproved: true, examAttempted: false, canTakeExam: false };
+
+    if (preferredDate) {
+      // date string se match karo — "27 March 2026" starts with "27"
+      filter.preferredDate = { $regex: `^${preferredDate}`, $options: 'i' };
+    } else if (userIds && Array.isArray(userIds) && userIds.length > 0) {
+      filter._id = { $in: userIds };
+    } else {
+      return res.status(400).json({ success: false, message: 'Provide userIds array or preferredDate' });
     }
 
-    const result = await User.updateMany(
-      { _id: { $in: userIds }, isApproved: true, examAttempted: false },
-      { canTakeExam: true }
-    );
+    const result = await User.updateMany(filter, { canTakeExam: true });
 
     res.status(200).json({
       success: true,
@@ -197,6 +244,32 @@ export const bulkEnableExam = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error enabling bulk exam access', error: error.message });
+  }
+};
+
+export const bulkDisableExam = async (req, res) => {
+  try {
+    const { userIds, preferredDate } = req.body;
+
+    let filter = { isApproved: true, canTakeExam: true, examAttempted: false };
+
+    if (preferredDate) {
+      filter.preferredDate = { $regex: `^${preferredDate}`, $options: 'i' };
+    } else if (userIds && Array.isArray(userIds) && userIds.length > 0) {
+      filter._id = { $in: userIds };
+    } else {
+      return res.status(400).json({ success: false, message: 'Provide userIds array or preferredDate' });
+    }
+
+    const result = await User.updateMany(filter, { canTakeExam: false });
+
+    res.status(200).json({
+      success: true,
+      message: `Exam access disabled for ${result.modifiedCount} users`,
+      data: { modifiedCount: result.modifiedCount }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error disabling bulk exam access', error: error.message });
   }
 };
 
@@ -358,7 +431,10 @@ export default {
   getAllUsers,
   approveUser,
   enableExamAccess,
+   disableExamAccess,
+   deleteUser,
   bulkEnableExam,
+  bulkDisableExam, 
   getDashboardStats,
   getUserById,
   publishResults,
